@@ -61,8 +61,8 @@ export function Features() {
                 key={feature.title}
                 className="p-8 flex flex-col items-center text-center group transition-all"
               >
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-accent-purple/20 to-accent-blue/20 flex items-center justify-center mb-6 group-hover:shadow-[0_0_20px_var(--color-accent-glow)] transition-all">
-                  <Icon className="w-8 h-8 text-white" />
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-accent-purple/20 to-accent-blue/20 flex items-center justify-center mb-6 group-hover:shadow-[0_0_20px_var(--color-accent-glow)] transition-all duration-300">
+                  <Icon className="w-8 h-8 text-white transition-all duration-300 group-hover:scale-110 group-hover:drop-shadow-[0_0_12px_rgba(139,92,246,0.8)]" />
                 </div>
                 <h3 className="text-xl font-semibold mb-4 flex items-center justify-center gap-2">
                   {feature.title}
