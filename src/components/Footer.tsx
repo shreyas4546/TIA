@@ -63,7 +63,7 @@ export function Footer() {
 
         <div className="pt-8 border-t border-brand-border flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-gray-500 text-sm">
-            &copy; {new Date().getFullYear()} Tia Inc. All rights reserved. Built for AI in Finance Hackathon.
+            &copy; {new Date().getFullYear()} Tia Inc. All rights reserved.
           </p>
           <div className="flex items-center gap-2 text-sm text-gray-500">
             <Mail className="w-4 h-4" /> support@tia.example.com

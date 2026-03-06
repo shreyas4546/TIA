@@ -1,6 +1,6 @@
 # Tia - AI Financial Assistant Dashboard
 
-A modern AI-powered financial assistant dashboard UI built for a hackathon.
+A modern AI-powered financial assistant dashboard UI.
 
 ## Tech Stack
 - React + TypeScript

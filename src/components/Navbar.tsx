@@ -38,7 +38,6 @@ export function Navbar() {
           <nav className="hidden md:flex items-center gap-8">
             <a href="#insights" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">Insights</a>
             <a href="#features" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">Features</a>
-            <a href="#register" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">Register</a>
           </nav>
         )}
 
@@ -65,7 +64,6 @@ export function Navbar() {
             <>
               <a href="#insights" onClick={() => setIsMobileMenuOpen(false)} className="text-gray-300 hover:text-white py-2 border-b border-brand-border/50">Insights</a>
               <a href="#features" onClick={() => setIsMobileMenuOpen(false)} className="text-gray-300 hover:text-white py-2 border-b border-brand-border/50">Features</a>
-              <a href="#register" onClick={() => setIsMobileMenuOpen(false)} className="text-gray-300 hover:text-white py-2 border-b border-brand-border/50">Register</a>
             </>
           )}
           {isDashboard ? (
