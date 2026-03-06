@@ -1,5 +1,7 @@
 import { Github, Twitter, Linkedin, Mail, ShieldCheck } from "lucide-react";
 
+import { Link } from "react-router-dom";
+
 export function Footer() {
   return (
     <footer className="bg-[#0B0F19] border-t border-brand-border pt-16 pb-8 relative z-10">
@@ -31,10 +33,10 @@ export function Footer() {
           <div>
             <h4 className="text-white font-semibold mb-6">Product</h4>
             <ul className="space-y-4">
-              <li><a href="#features" className="text-gray-400 hover:text-white transition-colors text-sm">Features</a></li>
-              <li><a href="#insights" className="text-gray-400 hover:text-white transition-colors text-sm">AI Insights</a></li>
-              <li><a href="#dashboard" className="text-gray-400 hover:text-white transition-colors text-sm">Dashboard</a></li>
-              <li><a href="#assistant" className="text-gray-400 hover:text-white transition-colors text-sm">Smart Assistant</a></li>
+              <li><Link to="/#features" className="text-gray-400 hover:text-white transition-colors text-sm">Features</Link></li>
+              <li><Link to="/#insights" className="text-gray-400 hover:text-white transition-colors text-sm">AI Insights</Link></li>
+              <li><Link to="/dashboard" className="text-gray-400 hover:text-white transition-colors text-sm">Dashboard</Link></li>
+              <li><Link to="/dashboard#assistant" className="text-gray-400 hover:text-white transition-colors text-sm">Smart Assistant</Link></li>
             </ul>
           </div>
 

@@ -1,6 +1,7 @@
 import { motion } from "motion/react";
-import { PieChart, Shield, Target, LineChart } from "lucide-react";
+import { PieChart, Shield, Target, LineChart, Info } from "lucide-react";
 import { features } from "../mock/data";
+import { InfoTooltip } from "./ui/InfoTooltip";
 
 const iconMap = {
   "pie-chart": PieChart,
@@ -38,7 +39,12 @@ export function Features() {
                 <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-accent-purple/20 to-accent-blue/20 flex items-center justify-center mb-6 group-hover:shadow-[0_0_20px_var(--color-accent-glow)] transition-all">
                   <Icon className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-xl font-semibold mb-4">{feature.title}</h3>
+                <h3 className="text-xl font-semibold mb-4 flex items-center justify-center gap-2">
+                  {feature.title}
+                  <InfoTooltip content={`Learn more about ${feature.title} and how it can help you.`}>
+                    <Info className="w-4 h-4 text-gray-500 hover:text-white cursor-help transition-colors" />
+                  </InfoTooltip>
+                </h3>
                 <p className="text-gray-400 leading-relaxed">
                   {feature.description}
                 </p>

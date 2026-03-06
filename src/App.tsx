@@ -3,26 +3,21 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Navbar } from "./components/Navbar";
-import { Hero } from "./components/Hero";
-import { Insights } from "./components/Insights";
-import { Dashboard } from "./components/Dashboard";
-import { Features } from "./components/Features";
-import { ChatPanel } from "./components/ChatPanel";
-import { Footer } from "./components/Footer";
+import { LandingPage } from "./pages/LandingPage";
+import { DashboardPage } from "./pages/DashboardPage";
 
 export default function App() {
   return (
-    <div className="min-h-screen bg-[#0B0F19] text-white font-sans selection:bg-accent-purple/30">
-      <Navbar />
-      <main>
-        <Hero />
-        <Insights />
-        <Dashboard />
-        <Features />
-        <ChatPanel />
-      </main>
-      <Footer />
-    </div>
+    <BrowserRouter>
+      <div className="min-h-screen bg-[#0B0F19] text-white font-sans selection:bg-accent-purple/30">
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/dashboard" element={<DashboardPage />} />
+        </Routes>
+      </div>
+    </BrowserRouter>
   );
 }

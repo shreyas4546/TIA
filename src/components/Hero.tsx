@@ -1,6 +1,8 @@
 import { motion } from "motion/react";
 import { ArrowRight, Sparkles, Activity, ShieldCheck, Wallet } from "lucide-react";
 
+import { Link } from "react-router-dom";
+
 export function Hero() {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
@@ -54,12 +56,12 @@ export function Hero() {
           </p>
           
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <button className="neon-button flex items-center gap-2 w-full sm:w-auto justify-center">
+            <Link to="/dashboard#assistant" className="neon-button flex items-center gap-2 w-full sm:w-auto justify-center">
               Start Analysis <ArrowRight className="w-4 h-4" />
-            </button>
-            <button className="px-6 py-3 rounded-xl bg-brand-surface border border-brand-border text-white font-medium hover:bg-brand-surface-hover transition-colors w-full sm:w-auto">
+            </Link>
+            <Link to="/dashboard" className="px-6 py-3 rounded-xl bg-brand-surface border border-brand-border text-white font-medium hover:bg-brand-surface-hover transition-colors w-full sm:w-auto">
               View Dashboard
-            </button>
+            </Link>
           </div>
         </motion.div>
       </div>

@@ -13,6 +13,8 @@ import {
   BarChart,
   Bar,
 } from "recharts";
+import { Info } from "lucide-react";
+import { InfoTooltip } from "./ui/InfoTooltip";
 import { spendingData, categoryData, weeklyData } from "../mock/data";
 
 const COLORS = ["#8B5CF6", "#3B82F6", "#06B6D4", "#10B981", "#F59E0B"];
@@ -41,7 +43,12 @@ export function Dashboard() {
           >
             <div className="mb-6 flex justify-between items-center">
               <div>
-                <h3 className="text-xl font-semibold mb-1">Monthly Spending Trend</h3>
+                <h3 className="text-xl font-semibold mb-1 flex items-center gap-2">
+                  Monthly Spending Trend
+                  <InfoTooltip content="A historical view of your spending over the last 7 months, helping you identify seasonal trends." position="right">
+                    <Info className="w-4 h-4 text-gray-500 hover:text-white cursor-help transition-colors" />
+                  </InfoTooltip>
+                </h3>
                 <p className="text-sm text-gray-400">Your expenses over the last 7 months</p>
               </div>
               <div className="px-3 py-1 bg-accent-purple/20 text-accent-purple rounded-full text-sm font-medium">
@@ -73,7 +80,12 @@ export function Dashboard() {
             className="glass-card p-6 flex flex-col"
           >
             <div className="mb-6">
-              <h3 className="text-xl font-semibold mb-1">Category Distribution</h3>
+              <h3 className="text-xl font-semibold mb-1 flex items-center gap-2">
+                Category Distribution
+                <InfoTooltip content="Breakdown of your spending by category to show where your money is going." position="right">
+                  <Info className="w-4 h-4 text-gray-500 hover:text-white cursor-help transition-colors" />
+                </InfoTooltip>
+              </h3>
               <p className="text-sm text-gray-400">Where your money goes</p>
             </div>
             <div className="h-[250px] w-full flex items-center justify-center">
@@ -121,7 +133,12 @@ export function Dashboard() {
           >
             <div className="mb-6 flex justify-between items-center">
               <div>
-                <h3 className="text-xl font-semibold mb-1">Weekly Spending</h3>
+                <h3 className="text-xl font-semibold mb-1 flex items-center gap-2">
+                  Weekly Spending
+                  <InfoTooltip content="Daily breakdown of your spending for the current week." position="right">
+                    <Info className="w-4 h-4 text-gray-500 hover:text-white cursor-help transition-colors" />
+                  </InfoTooltip>
+                </h3>
                 <p className="text-sm text-gray-400">Your daily expenses this week</p>
               </div>
               <div className="text-2xl font-bold text-white">$1,475</div>
