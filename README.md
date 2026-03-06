@@ -1,11 +1,46 @@
-<div align="center">
+# Tia - AI Financial Assistant Dashboard
 
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+A modern AI-powered financial assistant dashboard UI built for a hackathon.
 
-  <h1>Built with AI Studio</h2>
+## Tech Stack
+- React + TypeScript
+- Vite
+- Tailwind CSS
+- Framer Motion
+- Recharts
+- Lucide React
 
-  <p>The fastest path from prompt to production with Gemini.</p>
+## Getting Started
 
-  <a href="https://aistudio.google.com/apps">Start building</a>
+Follow these instructions to run the project locally.
 
-</div>
+### Prerequisites
+Make sure you have Node.js installed (v18+ recommended).
+
+### Installation & Setup
+
+1. Install dependencies:
+\`\`\`bash
+npm install
+\`\`\`
+
+2. Start the development server:
+\`\`\`bash
+npm run dev
+\`\`\`
+
+### Troubleshooting
+
+If you encounter issues during installation or running the project:
+
+- **Missing dependencies error:** Run `npm install --legacy-peer-deps` or `npm install --force` if there are peer dependency conflicts.
+- **Vite not found:** Ensure you have run `npm install` successfully. If the issue persists, try `npm install -g vite` or delete `node_modules` and `package-lock.json` and reinstall.
+- **TypeScript errors:** Run `npm run build` to see detailed type errors. Ensure you're using a recent version of TypeScript.
+- **Port already in use:** Vite will automatically try the next available port, but you can force a specific port by running `npm run dev -- --port 3000`.
+
+## Features
+- **Hero Section:** Animated entrance with fintech theme.
+- **AI Insights Panel:** Simulated AI-generated insights with hover animations.
+- **Financial Dashboard:** Interactive charts built with Recharts (Line, Pie, Bar).
+- **Smart Features:** Feature cards describing AI capabilities.
+- **Interactive AI Chat:** Real AI financial assistant UI powered by Gemini.
