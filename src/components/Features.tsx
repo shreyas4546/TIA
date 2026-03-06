@@ -4,6 +4,7 @@ import { PieChart, Shield, Target, LineChart, Info } from "lucide-react";
 import { features } from "../mock/data";
 import { InfoTooltip } from "./ui/InfoTooltip";
 import { slideUpVariants, staggerContainerVariants } from "../utils/animations";
+import { GlassCard } from "./ui/GlassCard";
 
 const iconMap = {
   "pie-chart": PieChart,
@@ -56,11 +57,9 @@ export function Features() {
           {features.map((feature) => {
             const Icon = iconMap[feature.icon as keyof typeof iconMap];
             return (
-              <motion.div
+              <GlassCard
                 key={feature.title}
-                variants={slideUpVariants}
-                whileHover={{ y: -10, scale: 1.03 }}
-                className="glass-card p-8 flex flex-col items-center text-center group transition-all"
+                className="p-8 flex flex-col items-center text-center group transition-all"
               >
                 <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-accent-purple/20 to-accent-blue/20 flex items-center justify-center mb-6 group-hover:shadow-[0_0_20px_var(--color-accent-glow)] transition-all">
                   <Icon className="w-8 h-8 text-white" />
@@ -74,7 +73,7 @@ export function Features() {
                 <p className="text-gray-400 leading-relaxed">
                   {feature.description}
                 </p>
-              </motion.div>
+              </GlassCard>
             );
           })}
         </motion.div>
@@ -82,3 +81,4 @@ export function Features() {
     </section>
   );
 }
+

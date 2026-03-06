@@ -15,6 +15,7 @@ import { Activity, AlertTriangle, TrendingUp, Info } from "lucide-react";
 import { InfoTooltip } from "./ui/InfoTooltip";
 import { fadeInScaleVariants, rotateAppearVariants, slideUpVariants } from "../utils/animations";
 import { FinancialRiskMeter } from "./FinancialRiskMeter";
+import { GlassCard } from "./ui/GlassCard";
 
 const predictionData = [
   { month: "Jan", actual: 4000, predicted: null },
@@ -80,8 +81,9 @@ export function WowFeatures() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-50px" }}
-            className="glass-card p-6 lg:col-span-2 flex flex-col"
+            className="lg:col-span-2 flex flex-col"
           >
+            <GlassCard className="p-6 h-full flex flex-col">
             <div className="mb-6 flex justify-between items-center">
               <div>
                 <h3 className="text-xl font-semibold mb-1 flex items-center gap-2">
@@ -125,6 +127,7 @@ export function WowFeatures() {
                 </AreaChart>
               </ResponsiveContainer>
             </div>
+            </GlassCard>
           </motion.div>
 
           <div className="flex flex-col gap-8">
@@ -135,8 +138,9 @@ export function WowFeatures() {
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, margin: "-50px" }}
-              className="glass-card p-6 flex flex-col items-center justify-center relative overflow-hidden"
+              className="flex flex-col items-center justify-center relative overflow-hidden"
             >
+              <GlassCard className="p-6 w-full h-full flex flex-col items-center justify-center relative overflow-hidden">
               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-500 via-yellow-500 to-red-500 opacity-50" />
               <h3 className="text-xl font-semibold mb-1 flex items-center gap-2 w-full">
                 <AlertTriangle className="w-5 h-5 text-yellow-500" />
@@ -148,6 +152,7 @@ export function WowFeatures() {
               <p className="text-sm text-gray-400 w-full mb-8">Real-time financial exposure</p>
               
               <FinancialRiskMeter score={45} />
+              </GlassCard>
             </motion.div>
 
             {/* AI Spending Score */}
@@ -156,8 +161,9 @@ export function WowFeatures() {
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, margin: "-50px" }}
-              className="glass-card p-6 flex flex-col"
+              className="flex flex-col"
             >
+              <GlassCard className="p-6 flex flex-col h-full">
               <h3 className="text-xl font-semibold mb-1 flex items-center gap-2">
                 <Activity className="w-5 h-5 text-accent-cyan" />
                 AI Spending Score
@@ -210,6 +216,7 @@ export function WowFeatures() {
                   </p>
                 </div>
               </div>
+              </GlassCard>
             </motion.div>
           </div>
         </div>

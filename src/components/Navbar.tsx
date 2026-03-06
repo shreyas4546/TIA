@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { ShieldCheck, Menu, X } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { GlowButton } from "./ui/GlowButton";
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   const isDashboard = location.pathname === "/dashboard";
 
   useEffect(() => {
@@ -16,6 +18,12 @@ export function Navbar() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const handleNavigation = (path: string) => {
+    navigate(path);
+    window.scrollTo(0, 0);
+    setIsMobileMenuOpen(false);
+  };
 
   return (
     <motion.header
@@ -43,9 +51,9 @@ export function Navbar() {
 
         <div className="hidden md:flex items-center gap-4">
           {isDashboard ? (
-            <Link to="/" className="neon-button px-5 py-2 text-sm" onClick={() => window.scrollTo(0, 0)}>Back to Home</Link>
+            <GlowButton variant="secondary" size="sm" onClick={() => handleNavigation("/")}>Back to Home</GlowButton>
           ) : (
-            <Link to="/dashboard" className="neon-button px-5 py-2 text-sm" onClick={() => window.scrollTo(0, 0)}>Open Dashboard</Link>
+            <GlowButton size="sm" onClick={() => handleNavigation("/dashboard")}>Open Dashboard</GlowButton>
           )}
         </div>
 
@@ -67,12 +75,13 @@ export function Navbar() {
             </>
           )}
           {isDashboard ? (
-            <Link to="/" onClick={() => setIsMobileMenuOpen(false)} className="neon-button text-center mt-4">Back to Home</Link>
+            <GlowButton variant="secondary" onClick={() => handleNavigation("/")} className="w-full">Back to Home</GlowButton>
           ) : (
-            <Link to="/dashboard" onClick={() => setIsMobileMenuOpen(false)} className="neon-button text-center mt-4">Open Dashboard</Link>
+            <GlowButton onClick={() => handleNavigation("/dashboard")} className="w-full">Open Dashboard</GlowButton>
           )}
         </div>
       )}
     </motion.header>
   );
 }
+

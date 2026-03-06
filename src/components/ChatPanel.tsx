@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from "motion/react";
 import { Send, Bot, User, Sparkles, Zap, Brain, Globe, Video, X, Mic } from "lucide-react";
 import { GoogleGenAI, ThinkingLevel, type GenerateContentResponse } from "@google/genai";
 import Markdown from "react-markdown";
+import { GlassCard } from "./ui/GlassCard";
+import { GlowButton } from "./ui/GlowButton";
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
@@ -251,11 +253,11 @@ export function ChatPanel() {
   };
 
   return (
-    <section className="py-24 bg-brand-surface/30 relative z-10" id="assistant">
+    <section className="py-24 relative z-10" id="assistant">
       <div className="container mx-auto px-6 max-w-4xl">
         <div className="mb-12 text-center">
-          <h2 className="text-3xl md:text-5xl font-display font-bold mb-4">
-            Interactive <span className="text-gradient">AI Assistant</span>
+          <h2 className="text-3xl md:text-5xl font-display font-bold mb-4 text-white">
+            Interactive <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent-purple to-accent-blue">AI Assistant</span>
           </h2>
           <p className="text-gray-400 max-w-2xl mx-auto text-lg">
             Ask questions about your finances in natural language and get instant, personalized insights.
@@ -267,137 +269,144 @@ export function ChatPanel() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="glass-card flex flex-col h-[600px] overflow-hidden"
         >
-          {/* Chat Header */}
-          <div className="p-4 border-b border-brand-border flex items-center justify-between bg-brand-surface/50">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-accent-purple to-accent-blue flex items-center justify-center relative">
-                <Bot className="w-5 h-5 text-white" />
-                <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-[#0B0F19] rounded-full"></div>
+          <GlassCard className="flex flex-col h-[600px] overflow-hidden p-0" hoverEffect={false}>
+            {/* Chat Header */}
+            <div className="p-4 border-b border-white/10 flex items-center justify-between bg-white/5 backdrop-blur-md">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-accent-purple to-accent-blue flex items-center justify-center relative shadow-lg shadow-accent-purple/20">
+                  <Bot className="w-5 h-5 text-white" />
+                  <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-[#0B0F19] rounded-full animate-pulse"></div>
+                </div>
+                <div>
+                  <h3 className="font-semibold text-white flex items-center gap-2">
+                    Tia Assistant <Sparkles className="w-4 h-4 text-accent-cyan" />
+                  </h3>
+                  <p className="text-xs text-green-400 font-medium">Online & Ready</p>
+                </div>
               </div>
-              <div>
-                <h3 className="font-semibold text-white flex items-center gap-2">
-                  Tia Assistant <Sparkles className="w-4 h-4 text-accent-cyan" />
-                </h3>
-                <p className="text-xs text-green-400">Online</p>
+              
+              <div className="flex items-center gap-1 bg-black/20 p-1 rounded-xl border border-white/5">
+                <button onClick={() => setChatMode('fast')} className={`px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all duration-200 ${chatMode === 'fast' ? 'bg-accent-blue/20 text-accent-blue border border-accent-blue/30 shadow-[0_0_10px_rgba(59,130,246,0.2)]' : 'text-gray-400 hover:bg-white/5 hover:text-gray-200'}`}><Zap className="w-3 h-3"/> Fast</button>
+                <button onClick={() => setChatMode('think')} className={`px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all duration-200 ${chatMode === 'think' ? 'bg-accent-purple/20 text-accent-purple border border-accent-purple/30 shadow-[0_0_10px_rgba(139,92,246,0.2)]' : 'text-gray-400 hover:bg-white/5 hover:text-gray-200'}`}><Brain className="w-3 h-3"/> Deep Think</button>
+                <button onClick={() => setChatMode('search')} className={`px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all duration-200 ${chatMode === 'search' ? 'bg-accent-cyan/20 text-accent-cyan border border-accent-cyan/30 shadow-[0_0_10px_rgba(6,182,212,0.2)]' : 'text-gray-400 hover:bg-white/5 hover:text-gray-200'}`}><Globe className="w-3 h-3"/> Search</button>
               </div>
             </div>
-            
-            <div className="flex items-center gap-1 bg-[#0B0F19] p-1 rounded-xl border border-brand-border">
-              <button onClick={() => setChatMode('fast')} className={`px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors ${chatMode === 'fast' ? 'bg-accent-blue/20 text-accent-blue border border-accent-blue/30' : 'text-gray-400 hover:bg-brand-surface'}`}><Zap className="w-3 h-3"/> Fast</button>
-              <button onClick={() => setChatMode('think')} className={`px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors ${chatMode === 'think' ? 'bg-accent-purple/20 text-accent-purple border border-accent-purple/30' : 'text-gray-400 hover:bg-brand-surface'}`}><Brain className="w-3 h-3"/> Deep Think</button>
-              <button onClick={() => setChatMode('search')} className={`px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors ${chatMode === 'search' ? 'bg-accent-cyan/20 text-accent-cyan border border-accent-cyan/30' : 'text-gray-400 hover:bg-brand-surface'}`}><Globe className="w-3 h-3"/> Search</button>
-            </div>
-          </div>
 
-          {/* Chat Messages */}
-          <div 
-            ref={scrollContainerRef}
-            className="flex-1 overflow-y-auto p-6 space-y-6 scrollbar-thin scrollbar-thumb-brand-border scrollbar-track-transparent"
-          >
-            <AnimatePresence initial={false}>
-              {messages.map((msg) => (
-                <motion.div
-                  key={msg.id}
-                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  className={`flex gap-4 ${msg.sender === "user" ? "flex-row-reverse" : ""}`}
-                >
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${msg.sender === "user" ? "bg-brand-surface border border-brand-border" : "bg-gradient-to-br from-accent-purple to-accent-blue"}`}>
-                    {msg.sender === "user" ? <User className="w-4 h-4 text-gray-300" /> : <Bot className="w-4 h-4 text-white" />}
-                  </div>
-                  
-                  <div className={`max-w-[80%] rounded-2xl p-4 ${msg.sender === "user" ? "bg-accent-purple/20 text-white rounded-tr-sm" : "bg-brand-surface border border-brand-border text-gray-200 rounded-tl-sm"}`}>
-                    {msg.hasVideo && (
-                      <div className="mb-2 flex items-center gap-2 text-xs bg-black/20 p-2 rounded-lg">
-                        <Video className="w-4 h-4" />
-                        <span>Video Attachment</span>
-                      </div>
-                    )}
-                    <div className="leading-relaxed prose prose-invert prose-sm max-w-none">
-                      <Markdown>{msg.text}</Markdown>
+            {/* Chat Messages */}
+            <div 
+              ref={scrollContainerRef}
+              className="flex-1 overflow-y-auto p-6 space-y-6 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent"
+            >
+              <AnimatePresence initial={false}>
+                {messages.map((msg) => (
+                  <motion.div
+                    key={msg.id}
+                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    className={`flex gap-4 ${msg.sender === "user" ? "flex-row-reverse" : ""}`}
+                  >
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 shadow-md ${msg.sender === "user" ? "bg-white/10 border border-white/10" : "bg-gradient-to-br from-accent-purple to-accent-blue"}`}>
+                      {msg.sender === "user" ? <User className="w-4 h-4 text-gray-300" /> : <Bot className="w-4 h-4 text-white" />}
                     </div>
-                    <span className="text-[10px] text-gray-500 mt-2 block text-right">
-                      {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                    </span>
+                    
+                    <div className={`max-w-[80%] rounded-2xl p-4 shadow-sm ${msg.sender === "user" ? "bg-accent-purple/20 border border-accent-purple/20 text-white rounded-tr-sm backdrop-blur-sm" : "bg-white/5 border border-white/10 text-gray-200 rounded-tl-sm backdrop-blur-sm"}`}>
+                      {msg.hasVideo && (
+                        <div className="mb-2 flex items-center gap-2 text-xs bg-black/30 p-2 rounded-lg border border-white/5">
+                          <Video className="w-4 h-4 text-accent-cyan" />
+                          <span>Video Attachment</span>
+                        </div>
+                      )}
+                      <div className="leading-relaxed prose prose-invert prose-sm max-w-none">
+                        <Markdown>{msg.text}</Markdown>
+                      </div>
+                      <span className="text-[10px] text-gray-500 mt-2 block text-right">
+                        {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      </span>
+                    </div>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+              
+              {isTyping && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex gap-4"
+                >
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-accent-purple to-accent-blue flex items-center justify-center flex-shrink-0 shadow-md">
+                    <Bot className="w-4 h-4 text-white" />
+                  </div>
+                  <div className="bg-white/5 border border-white/10 rounded-2xl rounded-tl-sm p-4 flex items-center gap-1 backdrop-blur-sm">
+                    <motion.div animate={{ y: [0, -5, 0] }} transition={{ duration: 0.6, repeat: Infinity, delay: 0 }} className="w-2 h-2 bg-accent-purple rounded-full" />
+                    <motion.div animate={{ y: [0, -5, 0] }} transition={{ duration: 0.6, repeat: Infinity, delay: 0.2 }} className="w-2 h-2 bg-accent-blue rounded-full" />
+                    <motion.div animate={{ y: [0, -5, 0] }} transition={{ duration: 0.6, repeat: Infinity, delay: 0.4 }} className="w-2 h-2 bg-accent-cyan rounded-full" />
                   </div>
                 </motion.div>
-              ))}
-            </AnimatePresence>
-            
-            {isTyping && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="flex gap-4"
-              >
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-accent-purple to-accent-blue flex items-center justify-center flex-shrink-0">
-                  <Bot className="w-4 h-4 text-white" />
-                </div>
-                <div className="bg-brand-surface border border-brand-border rounded-2xl rounded-tl-sm p-4 flex items-center gap-1">
-                  <motion.div animate={{ y: [0, -5, 0] }} transition={{ duration: 0.6, repeat: Infinity, delay: 0 }} className="w-2 h-2 bg-gray-400 rounded-full" />
-                  <motion.div animate={{ y: [0, -5, 0] }} transition={{ duration: 0.6, repeat: Infinity, delay: 0.2 }} className="w-2 h-2 bg-gray-400 rounded-full" />
-                  <motion.div animate={{ y: [0, -5, 0] }} transition={{ duration: 0.6, repeat: Infinity, delay: 0.4 }} className="w-2 h-2 bg-gray-400 rounded-full" />
-                </div>
-              </motion.div>
-            )}
-          </div>
+              )}
+            </div>
 
-          {/* Chat Input */}
-          <div className="p-4 border-t border-brand-border bg-brand-surface/50">
-            {selectedVideo && (
-              <div className="mb-3 flex items-center gap-2 bg-accent-purple/10 border border-accent-purple/30 p-2 rounded-lg w-fit">
-                <Video className="w-4 h-4 text-accent-purple" />
-                <span className="text-xs text-gray-300 max-w-[200px] truncate">{selectedVideo.name}</span>
-                <button onClick={() => setSelectedVideo(null)} className="hover:text-white text-gray-400"><X className="w-3 h-3" /></button>
-              </div>
-            )}
-            <form onSubmit={handleSend} className="relative flex items-center gap-2">
-              <input 
-                type="file" 
-                accept="video/*" 
-                ref={fileInputRef} 
-                className="hidden" 
-                onChange={handleFileSelect}
-              />
-              <button
-                type="button"
-                onClick={() => fileInputRef.current?.click()}
-                className="w-10 h-10 rounded-full bg-brand-surface border border-brand-border flex items-center justify-center text-gray-400 hover:text-white hover:border-accent-purple transition-colors flex-shrink-0"
-                title="Upload Video"
-              >
-                <Video className="w-5 h-5" />
-              </button>
-              
-              <button
-                type="button"
-                onClick={isRecording ? stopRecording : startRecording}
-                className={`w-10 h-10 rounded-full border flex items-center justify-center transition-colors flex-shrink-0 ${isRecording ? "bg-red-500/20 border-red-500 text-red-500 animate-pulse" : "bg-brand-surface border-brand-border text-gray-400 hover:text-white hover:border-accent-purple"}`}
-                title={isRecording ? "Stop Recording" : "Record Audio"}
-              >
-                <Mic className="w-5 h-5" />
-              </button>
+            {/* Chat Input */}
+            <div className="p-4 border-t border-white/10 bg-white/5 backdrop-blur-md">
+              {selectedVideo && (
+                <div className="mb-3 flex items-center gap-2 bg-accent-purple/10 border border-accent-purple/30 p-2 rounded-lg w-fit">
+                  <Video className="w-4 h-4 text-accent-purple" />
+                  <span className="text-xs text-gray-300 max-w-[200px] truncate">{selectedVideo.name}</span>
+                  <button onClick={() => setSelectedVideo(null)} className="hover:text-white text-gray-400"><X className="w-3 h-3" /></button>
+                </div>
+              )}
+              <form onSubmit={handleSend} className="relative flex items-center gap-3">
+                <input 
+                  type="file" 
+                  accept="video/*" 
+                  ref={fileInputRef} 
+                  className="hidden" 
+                  onChange={handleFileSelect}
+                />
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 hover:border-accent-purple/50 transition-all duration-200 flex-shrink-0"
+                  title="Upload Video"
+                >
+                  <Video className="w-5 h-5" />
+                </button>
+                
+                <button
+                  type="button"
+                  onClick={isRecording ? stopRecording : startRecording}
+                  className={`w-10 h-10 rounded-full border flex items-center justify-center transition-all duration-200 flex-shrink-0 ${isRecording ? "bg-red-500/20 border-red-500 text-red-500 animate-pulse shadow-[0_0_10px_rgba(239,68,68,0.4)]" : "bg-white/5 border-white/10 text-gray-400 hover:text-white hover:bg-white/10 hover:border-accent-purple/50"}`}
+                  title={isRecording ? "Stop Recording" : "Record Audio"}
+                >
+                  <Mic className="w-5 h-5" />
+                </button>
 
-              <input
-                type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder={isRecording ? "Recording..." : (selectedVideo ? "Ask about this video..." : "Ask Tia about your finances...")}
-                className="w-full bg-[#0B0F19] border border-brand-border rounded-full py-4 pl-6 pr-14 text-white focus:outline-none focus:border-accent-purple transition-colors"
-                disabled={isTyping || isRecording}
-              />
-              <button
-                type="submit"
-                disabled={(!input.trim() && !selectedVideo) || isTyping || isRecording}
-                className="absolute right-2 w-10 h-10 rounded-full bg-accent-purple flex items-center justify-center text-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-accent-blue transition-colors"
-              >
-                <Send className="w-4 h-4 ml-1" />
-              </button>
-            </form>
-          </div>
+                <input
+                  type="text"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  placeholder={isRecording ? "Recording..." : (selectedVideo ? "Ask about this video..." : "Ask Tia about your finances...")}
+                  className="w-full bg-black/20 border border-white/10 rounded-full py-3.5 pl-6 pr-14 text-white placeholder:text-gray-500 focus:outline-none focus:border-accent-purple/50 focus:bg-black/40 transition-all duration-200"
+                  disabled={isTyping || isRecording}
+                />
+                
+                <div className="absolute right-2">
+                  <GlowButton
+                    type="submit"
+                    variant="primary"
+                    size="sm"
+                    disabled={(!input.trim() && !selectedVideo) || isTyping || isRecording}
+                    className="!rounded-full !w-9 !h-9 !p-0 flex items-center justify-center"
+                  >
+                    <Send className="w-4 h-4" />
+                  </GlowButton>
+                </div>
+              </form>
+            </div>
+          </GlassCard>
         </motion.div>
       </div>
     </section>
   );
 }
+

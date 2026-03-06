@@ -1,9 +1,12 @@
 import { motion } from "motion/react";
 import { ArrowRight, Sparkles } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { LiquidEffectAnimation } from "./ui/liquid-effect-animation";
+import { GlowButton } from "./ui/GlowButton";
 
 export function Hero() {
+  const navigate = useNavigate();
+
   // Staggered animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -21,7 +24,7 @@ export function Hero() {
     visible: { 
       opacity: 1, 
       y: 0,
-      transition: { type: "spring", stiffness: 100, damping: 20, mass: 0.5 }
+      transition: { type: "spring" as const, stiffness: 100, damping: 20, mass: 0.5 }
     },
   };
 
@@ -72,23 +75,30 @@ export function Hero() {
           </motion.p>
           
           <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link to="/dashboard#assistant" className="neon-button flex items-center gap-2 w-full sm:w-auto justify-center group relative overflow-hidden">
-              <span className="relative z-10 flex items-center gap-2">
-                Start Analysis 
-                <motion.span
-                  animate={{ x: [0, 5, 0] }}
-                  transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                >
-                  <ArrowRight className="w-4 h-4" />
-                </motion.span>
-              </span>
-            </Link>
-            <Link to="/dashboard" className="px-6 py-3 rounded-xl bg-brand-surface/50 backdrop-blur-sm border border-brand-border text-white font-medium hover:bg-brand-surface-hover hover:shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:border-accent-blue/50 transition-all w-full sm:w-auto">
+            <GlowButton 
+              onClick={() => navigate("/dashboard#assistant")} 
+              className="w-full sm:w-auto"
+            >
+              Start Analysis 
+              <motion.span
+                animate={{ x: [0, 5, 0] }}
+                transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+              >
+                <ArrowRight className="w-4 h-4" />
+              </motion.span>
+            </GlowButton>
+            
+            <GlowButton 
+              variant="secondary"
+              onClick={() => navigate("/dashboard")}
+              className="w-full sm:w-auto"
+            >
               View Dashboard
-            </Link>
+            </GlowButton>
           </motion.div>
         </motion.div>
       </div>
     </section>
   );
 }
+

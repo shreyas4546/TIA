@@ -3,6 +3,7 @@ import { useRef } from "react";
 import { AlertTriangle, Zap, TrendingUp, ArrowRight } from "lucide-react";
 import { aiInsights } from "../mock/data";
 import { slideUpVariants, staggerContainerVariants, lineDrawVariants } from "../utils/animations";
+import { GlassCard } from "./ui/GlassCard";
 
 const iconMap = {
   "alert-triangle": AlertTriangle,
@@ -82,11 +83,11 @@ export function Insights() {
             {aiInsights.map((insight) => {
               const Icon = iconMap[insight.icon as keyof typeof iconMap];
               return (
-                <motion.div
+                <GlassCard
                   key={insight.id}
                   variants={slideUpVariants}
                   whileHover={{ y: -5, scale: 1.02 }}
-                  className="glass-card p-6 flex flex-col h-full group cursor-pointer transition-all relative"
+                  className="p-6 flex flex-col h-full group cursor-pointer transition-all relative"
                 >
                   <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-6 ${insight.bg}`}>
                     <Icon className={`w-6 h-6 ${insight.color}`} />
@@ -100,7 +101,7 @@ export function Insights() {
                   <div className="flex items-center gap-2 text-sm font-medium text-accent-cyan group-hover:text-accent-purple transition-colors mt-auto">
                     {insight.action} <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </div>
-                </motion.div>
+                </GlassCard>
               );
             })}
           </motion.div>
