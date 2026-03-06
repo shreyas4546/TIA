@@ -1,124 +1,9 @@
-import { useEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 import { LiquidEffectAnimation } from "./ui/liquid-effect-animation";
 
-interface Particle {
-  x: number;
-  y: number;
-  vx: number;
-  vy: number;
-  radius: number;
-  color: string;
-  opacity: number;
-  targetOpacity: number;
-}
-
-const COLORS = ["#8B5CF6", "#3B82F6", "#06B6D4"]; // Purple, Blue, Cyan
-
 export function Hero() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [mousePos, setMousePos] = useState({ x: -1000, y: -1000 });
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext("2d", { alpha: true });
-    if (!ctx) return;
-
-    let animationFrameId: number;
-    let particles: Particle[] = [];
-    const numParticles = 30;
-
-    const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-
-    window.addEventListener("resize", resize);
-    resize();
-
-    // Initialize particles
-    for (let i = 0; i < numParticles; i++) {
-      particles.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 0.4,
-        vy: (Math.random() - 0.5) * 0.4,
-        radius: Math.random() * 2 + 1,
-        color: COLORS[Math.floor(Math.random() * COLORS.length)],
-        opacity: Math.random() * 0.4 + 0.1,
-        targetOpacity: 0,
-      });
-    }
-
-    const draw = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      particles.forEach((p) => {
-        // Move
-        p.x += p.vx;
-        p.y += p.vy;
-
-        // Wrap around smoothly
-        if (p.x < -10) p.x = canvas.width + 10;
-        if (p.x > canvas.width + 10) p.x = -10;
-        if (p.y < -10) p.y = canvas.height + 10;
-        if (p.y > canvas.height + 10) p.y = -10;
-
-        // Mouse interaction
-        const dx = mousePos.x - p.x;
-        const dy = mousePos.y - p.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        const maxDist = 200;
-
-        if (dist < maxDist) {
-          const force = (maxDist - dist) / maxDist;
-          p.x -= dx * force * 0.003;
-          p.y -= dy * force * 0.003;
-          p.targetOpacity = 1.0;
-        } else {
-          p.targetOpacity = 0.4;
-        }
-
-        // Smooth opacity transition
-        p.opacity += (p.targetOpacity - p.opacity) * 0.05;
-
-        // Draw particle
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-        ctx.fillStyle = p.color;
-        ctx.globalAlpha = p.opacity;
-        ctx.shadowBlur = 25;
-        ctx.shadowColor = p.color;
-        ctx.fill();
-        
-        // Reset global alpha and shadow for next drawing operations
-        ctx.globalAlpha = 1;
-        ctx.shadowBlur = 0;
-      });
-
-      animationFrameId = requestAnimationFrame(draw);
-    };
-
-    draw();
-
-    return () => {
-      window.removeEventListener("resize", resize);
-      cancelAnimationFrame(animationFrameId);
-    };
-  }, [mousePos]);
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    setMousePos({ x: e.clientX, y: e.clientY });
-  };
-
-  const handleMouseLeave = () => {
-    setMousePos({ x: -1000, y: -1000 });
-  };
-
   // Staggered animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -142,11 +27,12 @@ export function Hero() {
 
   return (
     <section 
-      className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 bg-[#0B0F19]"
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
+      className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 bg-brand-bg"
     >
       <LiquidEffectAnimation />
+      
+      {/* Dark overlay to match website theme */}
+      <div className="absolute inset-0 bg-brand-bg/80 z-0 pointer-events-none" />
 
       {/* Subtle Grid Background */}
       <div 
@@ -157,12 +43,6 @@ export function Hero() {
           maskImage: 'radial-gradient(circle at center, black 0%, transparent 70%)',
           WebkitMaskImage: 'radial-gradient(circle at center, black 0%, transparent 70%)'
         }}
-      />
-
-      {/* Particle Canvas */}
-      <canvas 
-        ref={canvasRef} 
-        className="absolute inset-0 z-0 pointer-events-none"
       />
 
       {/* Background gradients */}

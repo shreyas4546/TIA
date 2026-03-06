@@ -10,7 +10,7 @@ export function LiquidEffectAnimation() {
     const script = document.createElement("script")
     script.type = "module"
     script.textContent = `
-      import LiquidBackground from 'https://cdn.jsdelivr.net/npm/threejscomponents@0.0.22/build/backgrounds/liquid1.min.js';
+      import LiquidBackground from 'https://cdn.jsdelivr.net/npm/threejs-components@0.0.22/build/backgrounds/liquid1.min.js';
       const canvas = document.getElementById('liquid-canvas');
       if (canvas) {
         const app = LiquidBackground(canvas);
