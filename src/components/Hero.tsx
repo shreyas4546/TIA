@@ -10,7 +10,7 @@ export function Hero() {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.2,
+        staggerChildren: 0.15,
         delayChildren: 0.1,
       },
     },
@@ -21,7 +21,7 @@ export function Hero() {
     visible: { 
       opacity: 1, 
       y: 0,
-      transition: { type: "spring" as const, stiffness: 50, damping: 15 }
+      transition: { type: "spring", stiffness: 100, damping: 20, mass: 0.5 }
     },
   };
 

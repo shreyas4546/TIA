@@ -43,9 +43,9 @@ export function Navbar() {
 
         <div className="hidden md:flex items-center gap-4">
           {isDashboard ? (
-            <Link to="/" className="neon-button px-5 py-2 text-sm">Back to Home</Link>
+            <Link to="/" className="neon-button px-5 py-2 text-sm" onClick={() => window.scrollTo(0, 0)}>Back to Home</Link>
           ) : (
-            <Link to="/dashboard" className="neon-button px-5 py-2 text-sm">Open Dashboard</Link>
+            <Link to="/dashboard" className="neon-button px-5 py-2 text-sm" onClick={() => window.scrollTo(0, 0)}>Open Dashboard</Link>
           )}
         </div>
 

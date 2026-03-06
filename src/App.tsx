@@ -7,10 +7,12 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Navbar } from "./components/Navbar";
 import { LandingPage } from "./pages/LandingPage";
 import { DashboardPage } from "./pages/DashboardPage";
+import { ScrollToTop } from "./components/ScrollToTop";
 
 export default function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <div className="min-h-screen bg-[#0B0F19] text-white font-sans selection:bg-accent-purple/30">
         <Navbar />
         <Routes>

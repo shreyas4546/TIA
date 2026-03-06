@@ -16,12 +16,15 @@ import {
 import { Info } from "lucide-react";
 import { InfoTooltip } from "./ui/InfoTooltip";
 import { spendingData, categoryData, weeklyData } from "../mock/data";
+import { fadeInScaleVariants, slideUpVariants } from "../utils/animations";
+import { PredictionGraph } from "./PredictionGraph";
+import { AIAnalysisReveal } from "./AIAnalysisReveal";
 
 const COLORS = ["#8B5CF6", "#3B82F6", "#06B6D4", "#10B981", "#F59E0B"];
 
 export function Dashboard() {
   return (
-    <section className="py-24 bg-brand-surface/30 relative z-10" id="dashboard">
+    <section className="py-24 bg-brand-surface/30 relative z-10">
       <div className="container mx-auto px-6">
         <div className="mb-16 text-center">
           <h2 className="text-3xl md:text-5xl font-display font-bold mb-4">
@@ -35,10 +38,10 @@ export function Dashboard() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Line Chart */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            variants={fadeInScaleVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-50px" }}
             className="glass-card p-6 lg:col-span-2 flex flex-col"
           >
             <div className="mb-6 flex justify-between items-center">
@@ -60,12 +63,21 @@ export function Dashboard() {
                 <LineChart data={spendingData} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" vertical={false} />
                   <XAxis dataKey="name" stroke="rgba(255,255,255,0.5)" tick={{ fill: "rgba(255,255,255,0.5)" }} axisLine={false} tickLine={false} />
-                  <YAxis stroke="rgba(255,255,255,0.5)" tick={{ fill: "rgba(255,255,255,0.5)" }} axisLine={false} tickLine={false} tickFormatter={(value) => `$${value}`} />
+                  <YAxis stroke="rgba(255,255,255,0.5)" tick={{ fill: "rgba(255,255,255,0.5)" }} axisLine={false} tickLine={false} tickFormatter={(value) => `${value}`} />
                   <Tooltip
                     contentStyle={{ backgroundColor: "#0B0F19", borderColor: "rgba(255,255,255,0.1)", borderRadius: "12px", color: "#fff" }}
                     itemStyle={{ color: "#8B5CF6" }}
                   />
-                  <Line type="monotone" dataKey="amount" stroke="#8B5CF6" strokeWidth={3} dot={{ r: 4, fill: "#0B0F19", strokeWidth: 2 }} activeDot={{ r: 6, fill: "#8B5CF6" }} />
+                  <Line 
+                    type="monotone" 
+                    dataKey="amount" 
+                    stroke="#8B5CF6" 
+                    strokeWidth={3} 
+                    dot={{ r: 4, fill: "#0B0F19", strokeWidth: 2 }} 
+                    activeDot={{ r: 6, fill: "#8B5CF6" }}
+                    animationDuration={1200}
+                    animationEasing="ease-out"
+                  />
                 </LineChart>
               </ResponsiveContainer>
             </div>
@@ -73,10 +85,10 @@ export function Dashboard() {
 
           {/* Pie Chart */}
           <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            variants={slideUpVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-50px" }}
             className="glass-card p-6 flex flex-col"
           >
             <div className="mb-6">
@@ -100,6 +112,8 @@ export function Dashboard() {
                     paddingAngle={5}
                     dataKey="value"
                     stroke="none"
+                    animationDuration={1200}
+                    animationBegin={200}
                   >
                     {categoryData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
@@ -123,13 +137,20 @@ export function Dashboard() {
             </div>
           </motion.div>
 
+          {/* AI Prediction Graph - Full Width on Mobile, Span 2 on Desktop */}
+          <div className="lg:col-span-2 h-full min-h-[400px]">
+            <AIAnalysisReveal className="h-full">
+              <PredictionGraph />
+            </AIAnalysisReveal>
+          </div>
+
           {/* Bar Chart */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="glass-card p-6 lg:col-span-3 flex flex-col"
+            variants={slideUpVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-50px" }}
+            className="glass-card p-6 flex flex-col"
           >
             <div className="mb-6 flex justify-between items-center">
               <div>
@@ -148,13 +169,19 @@ export function Dashboard() {
                 <BarChart data={weeklyData} margin={{ top: 5, right: 0, bottom: 5, left: -20 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
                   <XAxis dataKey="day" stroke="rgba(255,255,255,0.5)" tick={{ fill: "rgba(255,255,255,0.5)" }} axisLine={false} tickLine={false} />
-                  <YAxis stroke="rgba(255,255,255,0.5)" tick={{ fill: "rgba(255,255,255,0.5)" }} axisLine={false} tickLine={false} tickFormatter={(value) => `$${value}`} />
+                  <YAxis stroke="rgba(255,255,255,0.5)" tick={{ fill: "rgba(255,255,255,0.5)" }} axisLine={false} tickLine={false} tickFormatter={(value) => `${value}`} />
                   <Tooltip
                     cursor={{ fill: "rgba(255,255,255,0.05)" }}
                     contentStyle={{ backgroundColor: "#0B0F19", borderColor: "rgba(255,255,255,0.1)", borderRadius: "12px", color: "#fff" }}
                     itemStyle={{ color: "#3B82F6" }}
                   />
-                  <Bar dataKey="spent" fill="#3B82F6" radius={[4, 4, 0, 0]} />
+                  <Bar 
+                    dataKey="spent" 
+                    fill="#3B82F6" 
+                    radius={[4, 4, 0, 0]} 
+                    animationDuration={1200}
+                    animationBegin={400}
+                  />
                 </BarChart>
               </ResponsiveContainer>
             </div>

@@ -1,7 +1,9 @@
-import { motion } from "motion/react";
+import { motion, useScroll, useTransform } from "motion/react";
+import { useRef } from "react";
 import { PieChart, Shield, Target, LineChart, Info } from "lucide-react";
 import { features } from "../mock/data";
 import { InfoTooltip } from "./ui/InfoTooltip";
+import { slideUpVariants, staggerContainerVariants } from "../utils/animations";
 
 const iconMap = {
   "pie-chart": PieChart,
@@ -11,28 +13,52 @@ const iconMap = {
 };
 
 export function Features() {
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"]
+  });
+  
+  // Subtle parallax effect for the background
+  const y = useTransform(scrollYProgress, [0, 1], ["-10%", "10%"]);
+
   return (
-    <section className="py-24 relative z-10" id="features">
-      <div className="container mx-auto px-6">
-        <div className="mb-16 text-center">
+    <section ref={ref} className="py-24 relative z-10 overflow-hidden" id="features">
+      {/* Parallax Background Element */}
+      <motion.div 
+        style={{ y }}
+        className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-accent-purple/5 rounded-full blur-[100px] pointer-events-none"
+      />
+
+      <div className="container mx-auto px-6 relative z-10">
+        <motion.div 
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={slideUpVariants}
+          className="mb-16 text-center"
+        >
           <h2 className="text-3xl md:text-5xl font-display font-bold mb-4">
             Smart <span className="text-gradient">Capabilities</span>
           </h2>
           <p className="text-gray-400 max-w-2xl mx-auto text-lg">
             Our platform leverages advanced AI to automate your financial life and protect your assets.
           </p>
-        </div>
+        </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {features.map((feature, index) => {
+        <motion.div 
+          variants={staggerContainerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+        >
+          {features.map((feature) => {
             const Icon = iconMap[feature.icon as keyof typeof iconMap];
             return (
               <motion.div
                 key={feature.title}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
+                variants={slideUpVariants}
                 whileHover={{ y: -10, scale: 1.03 }}
                 className="glass-card p-8 flex flex-col items-center text-center group transition-all"
               >
@@ -51,7 +77,7 @@ export function Features() {
               </motion.div>
             );
           })}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

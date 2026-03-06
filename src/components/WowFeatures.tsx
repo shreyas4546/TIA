@@ -1,4 +1,5 @@
-import { motion } from "motion/react";
+import { motion, useScroll, useTransform } from "motion/react";
+import { useRef } from "react";
 import {
   AreaChart,
   Area,
@@ -12,6 +13,8 @@ import {
 } from "recharts";
 import { Activity, AlertTriangle, TrendingUp, Info } from "lucide-react";
 import { InfoTooltip } from "./ui/InfoTooltip";
+import { fadeInScaleVariants, rotateAppearVariants, slideUpVariants } from "../utils/animations";
+import { FinancialRiskMeter } from "./FinancialRiskMeter";
 
 const predictionData = [
   { month: "Jan", actual: 4000, predicted: null },
@@ -37,25 +40,46 @@ const sparklineData = [
 ];
 
 export function WowFeatures() {
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"]
+  });
+  
+  // Subtle parallax effect for the background
+  const y = useTransform(scrollYProgress, [0, 1], ["10%", "-10%"]);
+
   return (
-    <section className="py-12 bg-brand-surface/30 relative z-10" id="wow-features">
-      <div className="container mx-auto px-6">
-        <div className="mb-12 text-center">
+    <section ref={ref} className="py-12 bg-brand-surface/30 relative z-10 overflow-hidden" id="wow-features">
+      {/* Parallax Background Element */}
+      <motion.div 
+        style={{ y }}
+        className="absolute bottom-0 right-1/4 w-[600px] h-[600px] bg-accent-blue/5 rounded-full blur-[120px] pointer-events-none"
+      />
+
+      <div className="container mx-auto px-6 relative z-10">
+        <motion.div 
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={slideUpVariants}
+          className="mb-12 text-center"
+        >
           <h2 className="text-3xl md:text-5xl font-display font-bold mb-4">
             AI <span className="text-gradient">Intelligence</span>
           </h2>
           <p className="text-gray-400 max-w-2xl mx-auto text-lg">
             Advanced predictive models and real-time risk assessment.
           </p>
-        </div>
+        </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Animated AI Prediction Graph */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            variants={fadeInScaleVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-50px" }}
             className="glass-card p-6 lg:col-span-2 flex flex-col"
           >
             <div className="mb-6 flex justify-between items-center">
@@ -104,12 +128,13 @@ export function WowFeatures() {
           </motion.div>
 
           <div className="flex flex-col gap-8">
+
             {/* Live Financial Risk Meter */}
             <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.2 }}
+              variants={rotateAppearVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-50px" }}
               className="glass-card p-6 flex flex-col items-center justify-center relative overflow-hidden"
             >
               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-500 via-yellow-500 to-red-500 opacity-50" />
@@ -122,40 +147,15 @@ export function WowFeatures() {
               </h3>
               <p className="text-sm text-gray-400 w-full mb-8">Real-time financial exposure</p>
               
-              <div className="relative w-48 h-24 flex items-end justify-center overflow-hidden">
-                {/* Semi-circle gauge background */}
-                <div className="w-48 h-48 rounded-full border-[16px] border-brand-surface absolute top-0 box-border" />
-                {/* Colored gauge segments */}
-                <svg className="w-48 h-48 absolute top-0 transform -rotate-180" viewBox="0 0 100 100">
-                  <circle cx="50" cy="50" r="42" fill="none" stroke="#10B981" strokeWidth="16" strokeDasharray="44 264" strokeDashoffset="0" />
-                  <circle cx="50" cy="50" r="42" fill="none" stroke="#F59E0B" strokeWidth="16" strokeDasharray="44 264" strokeDashoffset="-44" />
-                  <circle cx="50" cy="50" r="42" fill="none" stroke="#EF4444" strokeWidth="16" strokeDasharray="44 264" strokeDashoffset="-88" />
-                </svg>
-                
-                {/* Animated Needle */}
-                <motion.div
-                  className="absolute bottom-0 w-2 h-24 origin-bottom"
-                  initial={{ rotate: -90 }}
-                  whileInView={{ rotate: -10 }} // Points to the yellow area
-                  viewport={{ once: true }}
-                  transition={{ type: "spring", stiffness: 50, damping: 10, delay: 0.5 }}
-                >
-                  <div className="w-2 h-16 bg-white rounded-t-full shadow-[0_0_10px_rgba(255,255,255,0.5)] absolute bottom-0" />
-                  <div className="w-4 h-4 bg-white rounded-full absolute bottom-[-8px] left-[-4px] shadow-[0_0_10px_rgba(255,255,255,0.8)]" />
-                </motion.div>
-              </div>
-              <div className="mt-4 text-center">
-                <span className="text-2xl font-bold text-white">Moderate</span>
-                <p className="text-xs text-gray-400 mt-1">Based on current market volatility</p>
-              </div>
+              <FinancialRiskMeter score={45} />
             </motion.div>
 
             {/* AI Spending Score */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.4 }}
+              variants={rotateAppearVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-50px" }}
               className="glass-card p-6 flex flex-col"
             >
               <h3 className="text-xl font-semibold mb-1 flex items-center gap-2">
@@ -183,7 +183,7 @@ export function WowFeatures() {
                       initial={{ strokeDashoffset: 251.2 }}
                       whileInView={{ strokeDashoffset: 251.2 - (251.2 * 0.85) }} // 85% score
                       viewport={{ once: true }}
-                      transition={{ duration: 1.5, ease: "easeOut", delay: 0.5 }}
+                      transition={{ duration: 1.2, ease: "easeOut", delay: 0.5 }}
                     />
                   </svg>
                   <div className="absolute flex flex-col items-center justify-center">
