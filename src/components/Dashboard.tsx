@@ -22,12 +22,15 @@ import { fadeInScaleVariants, slideUpVariants } from "../utils/animations";
 import { AIAnalysisReveal } from "./AIAnalysisReveal";
 import { FinancialGoals } from "./FinancialGoals";
 import { ConnectedAccounts } from "./ConnectedAccounts";
+import { TransactionHistory } from "./TransactionHistory";
 import { GlassCard } from "./ui/GlassCard";
 import { ErrorBoundary } from "./ErrorBoundary";
 import { CurrencySwitcher } from "./CurrencySwitcher";
 import { useCurrency } from "../contexts/CurrencyContext";
+import { useAuth } from "../contexts/AuthContext";
 import { PredictionGraph } from "./PredictionGraph";
 import { FinancialHologramDashboard } from "./FinancialHologramDashboard";
+import { useTranslation } from "react-i18next";
 
 const COLORS = ["#8B5CF6", "#3B82F6", "#06B6D4", "#10B981", "#F59E0B"];
 
@@ -35,6 +38,8 @@ export function Dashboard() {
   const [selectedMonth, setSelectedMonth] = useState<any>(null);
   const [isHoloAnimated, setIsHoloAnimated] = useState(true);
   const { currency, formatAmount } = useCurrency();
+  const { user } = useAuth();
+  const { t } = useTranslation();
 
   return (
     <section className="py-24 relative z-10 overflow-hidden">
@@ -319,6 +324,23 @@ export function Dashboard() {
           <div className="flex flex-col lg:col-span-3">
             <ConnectedAccounts />
           </div>
+
+          {/* Private Transaction History */}
+          {user && (
+            <motion.div 
+              variants={slideUpVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              className="lg:col-span-3 mt-8"
+            >
+              <div className="mb-8">
+                <h3 className="text-2xl font-display font-bold text-foreground mb-2">{t("dashboard.privateTransactions")}</h3>
+                <p className="text-muted-foreground">{t("dashboard.privateTransactionsDesc")}</p>
+              </div>
+              <TransactionHistory />
+            </motion.div>
+          )}
         </div>
       </div>
 

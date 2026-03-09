@@ -2,9 +2,14 @@
   "nav": {
     "home": "Home",
     "dashboard": "Dashboard",
+    "transactions": "Transactions",
     "insights": "Insights",
     "signIn": "Sign In",
     "myProfile": "My Profile"
+  },
+  "dashboard": {
+    "privateTransactions": "Private Transaction History",
+    "privateTransactionsDesc": "Detailed breakdown of your financial activities, visible only to you."
   },
   "hero": {
     "title": "AI-Powered Financial Intelligence",
