@@ -5,6 +5,7 @@ export const slideUpVariants: Variants = {
   visible: {
     opacity: 1,
     y: 0,
+    willChange: "transform, opacity",
     transition: {
       type: "spring",
       stiffness: 100,
@@ -12,6 +13,11 @@ export const slideUpVariants: Variants = {
       mass: 0.5,
     },
   },
+  exit: {
+    opacity: 0,
+    y: -20,
+    transition: { duration: 0.3, ease: "easeIn" }
+  }
 };
 
 export const staggerContainerVariants: Variants = {
@@ -23,6 +29,13 @@ export const staggerContainerVariants: Variants = {
       delayChildren: 0.05,
     },
   },
+  exit: {
+    opacity: 0,
+    transition: {
+      staggerChildren: 0.05,
+      staggerDirection: -1
+    }
+  }
 };
 
 export const fadeInScaleVariants: Variants = {
@@ -30,6 +43,7 @@ export const fadeInScaleVariants: Variants = {
   visible: {
     opacity: 1,
     scale: 1,
+    willChange: "transform, opacity",
     transition: {
       type: "spring",
       stiffness: 120,
@@ -37,6 +51,11 @@ export const fadeInScaleVariants: Variants = {
       mass: 0.5,
     },
   },
+  exit: {
+    opacity: 0,
+    scale: 0.95,
+    transition: { duration: 0.3, ease: "easeIn" }
+  }
 };
 
 export const rotateAppearVariants: Variants = {
@@ -45,6 +64,7 @@ export const rotateAppearVariants: Variants = {
     opacity: 1,
     rotate: 0,
     scale: 1,
+    willChange: "transform, opacity",
     transition: {
       type: "spring",
       stiffness: 120,
@@ -52,6 +72,12 @@ export const rotateAppearVariants: Variants = {
       mass: 0.5,
     },
   },
+  exit: {
+    opacity: 0,
+    rotate: 2,
+    scale: 0.95,
+    transition: { duration: 0.3, ease: "easeIn" }
+  }
 };
 
 export const lineDrawVariants: Variants = {
@@ -64,6 +90,11 @@ export const lineDrawVariants: Variants = {
       ease: [0.25, 0.1, 0.25, 1.0], // Cubic bezier for smooth ease-out
     },
   },
+  exit: {
+    pathLength: 0,
+    opacity: 0,
+    transition: { duration: 0.3, ease: "easeIn" }
+  }
 };
 
 export const slideInLeftVariants: Variants = {
@@ -71,6 +102,7 @@ export const slideInLeftVariants: Variants = {
   visible: {
     opacity: 1,
     x: 0,
+    willChange: "transform, opacity",
     transition: {
       type: "spring",
       stiffness: 100,
@@ -78,6 +110,11 @@ export const slideInLeftVariants: Variants = {
       mass: 0.5,
     },
   },
+  exit: {
+    opacity: 0,
+    x: -20,
+    transition: { duration: 0.3, ease: "easeIn" }
+  }
 };
 
 export const slideInRightVariants: Variants = {
@@ -85,6 +122,7 @@ export const slideInRightVariants: Variants = {
   visible: {
     opacity: 1,
     x: 0,
+    willChange: "transform, opacity",
     transition: {
       type: "spring",
       stiffness: 100,
@@ -92,4 +130,9 @@ export const slideInRightVariants: Variants = {
       mass: 0.5,
     },
   },
+  exit: {
+    opacity: 0,
+    x: 20,
+    transition: { duration: 0.3, ease: "easeIn" }
+  }
 };

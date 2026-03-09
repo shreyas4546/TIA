@@ -1,0 +1,10 @@
+[
+  { "month": "Jan", "actual": 4000 },
+  { "month": "Feb", "actual": 3000 },
+  { "month": "Mar", "actual": 2000 },
+  { "month": "Apr", "actual": 2780 },
+  { "month": "May", "actual": 1890 },
+  { "month": "Jun", "actual": 2390 },
+  { "month": "Jul", "actual": 3490 },
+  { "month": "Aug", "actual": 3200 }
+]

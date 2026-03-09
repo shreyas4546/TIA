@@ -1,15 +1,20 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { ShieldCheck, Menu, X } from "lucide-react";
+import { ShieldCheck, Menu, X, Sun, Moon, User } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { GlowButton } from "./ui/GlowButton";
+import { useTheme } from "./ThemeProvider";
+import { NotificationsDropdown } from "./NotificationsDropdown";
+import { useAuth } from "../contexts/AuthContext";
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const { theme, setTheme } = useTheme();
   const location = useLocation();
   const mobileMenuRef = useRef<HTMLDivElement>(null);
+  const { user, signInWithGoogle } = useAuth();
 
   const navLinks = [
     { name: "Home", path: "/" },
@@ -24,6 +29,10 @@ export function Navbar() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const toggleTheme = () => {
+    setTheme(theme === "dark" ? "light" : "dark");
+  };
 
   // Focus trap for mobile menu
   useEffect(() => {
@@ -67,9 +76,9 @@ export function Navbar() {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.5 }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         isScrolled
-          ? "bg-[#0B0F19]/80 backdrop-blur-xl border-b border-accent-purple/20 py-4 shadow-[0_4px_30px_rgba(0,0,0,0.1)]"
+          ? "bg-background/60 backdrop-blur-2xl border-b border-border py-4 shadow-lg"
           : "bg-transparent py-6"
       }`}
     >
@@ -77,21 +86,24 @@ export function Navbar() {
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 group">
           {/* Swap this SVG with your custom logo */}
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent-purple to-accent-blue flex items-center justify-center shadow-[0_0_15px_var(--color-accent-glow)] group-hover:shadow-[0_0_25px_var(--color-accent-glow)] transition-shadow duration-300">
-            <ShieldCheck className="w-6 h-6 text-white" />
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent-purple to-accent-blue flex items-center justify-center shadow-[0_0_15px_var(--color-accent-glow)] group-hover:shadow-[0_0_25px_var(--color-accent-glow)] transition-shadow duration-500">
+            <ShieldCheck className="w-6 h-6 text-white" aria-hidden="true" />
           </div>
-          <span className="text-2xl font-display font-bold tracking-tight text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-accent-purple group-hover:to-accent-cyan transition-all duration-300">
+          <span className="text-2xl font-display font-bold tracking-tight text-foreground group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-accent-purple group-hover:to-accent-cyan transition-all duration-500">
             Tia
           </span>
         </Link>
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-8 relative">
-          {navLinks.map((link, index) => (
+          {navLinks.map((link, index) => {
+            const isActive = location.pathname === link.path || (link.path.startsWith('/#') && location.hash === link.path.substring(1));
+            return (
             <Link
               key={link.name}
               to={link.path}
-              className="relative px-2 py-1 text-sm font-medium text-gray-300 hover:text-white transition-colors"
+              aria-current={isActive ? "page" : undefined}
+              className={`relative px-2 py-1 text-sm font-medium transition-colors duration-300 ${isActive ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
               onMouseEnter={() => setHoveredIndex(index)}
               onMouseLeave={() => setHoveredIndex(null)}
             >
@@ -99,7 +111,7 @@ export function Navbar() {
               {hoveredIndex === index && (
                 <motion.div
                   layoutId="navbar-underline"
-                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-accent-cyan shadow-[0_0_10px_var(--color-accent-cyan)]"
+                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-accent-cyan to-accent-purple shadow-[0_0_8px_var(--color-accent-cyan)]"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
@@ -107,32 +119,72 @@ export function Navbar() {
                 />
               )}
             </Link>
-          ))}
+          )})}
         </nav>
 
-        {/* CTA Button */}
-        <div className="hidden md:block">
-          <GlowButton
-            variant="primary"
-            size="sm"
-            className="shadow-[0_0_15px_rgba(139,92,246,0.3)] hover:shadow-[0_0_25px_rgba(139,92,246,0.5)]"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+        <div className="hidden md:flex items-center gap-4">
+          <NotificationsDropdown />
+          {/* Theme Toggle */}
+          <button
+            onClick={toggleTheme}
+            className="p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-300"
+            aria-label="Toggle theme"
           >
-            Register
-          </GlowButton>
+            <motion.div
+              initial={false}
+              animate={{ rotate: theme === 'dark' ? 0 : 180 }}
+              transition={{ duration: 0.5, ease: "easeInOut" }}
+            >
+              {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+            </motion.div>
+          </button>
+
+          {/* CTA Button */}
+          {user ? (
+            <Link to="/profile" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+              <div className="w-8 h-8 rounded-full bg-accent-purple/20 flex items-center justify-center overflow-hidden border border-accent-purple/50">
+                {user.photoURL ? (
+                  <img src={user.photoURL} alt="Profile" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                ) : (
+                  <User className="w-4 h-4 text-accent-purple" />
+                )}
+              </div>
+            </Link>
+          ) : (
+            <GlowButton
+              variant="primary"
+              size="sm"
+              className="shadow-[0_0_20px_rgba(139,92,246,0.3)] hover:shadow-[0_0_30px_rgba(139,92,246,0.6)] transition-shadow duration-500"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={signInWithGoogle}
+            >
+              Sign In
+            </GlowButton>
+          )}
         </div>
 
         {/* Mobile Menu Toggle */}
-        <button
-          className="md:hidden text-gray-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-accent-purple rounded-lg p-1"
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          aria-expanded={isMobileMenuOpen}
-          aria-controls="mobile-menu"
-          aria-label="Toggle mobile menu"
-        >
-          {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-        </button>
+        <div className="flex items-center gap-4 md:hidden">
+          <NotificationsDropdown />
+          <button
+            onClick={toggleTheme}
+            className="p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-300"
+            aria-label="Toggle theme"
+          >
+             {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+          </button>
+          
+          <button
+            className="text-muted-foreground hover:text-foreground focus:outline-none focus:ring-2 focus:ring-accent-purple rounded-lg p-1"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            aria-expanded={isMobileMenuOpen}
+            aria-controls="mobile-menu"
+            aria-label="Toggle mobile menu"
+          >
+            {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Menu */}
@@ -145,13 +197,13 @@ export function Navbar() {
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="fixed inset-y-0 right-0 w-full sm:w-80 bg-[#0B0F19]/95 backdrop-blur-2xl border-l border-accent-purple/20 shadow-2xl z-50 flex flex-col p-6 md:hidden"
+            className="fixed inset-y-0 right-0 w-full sm:w-80 bg-background/95 backdrop-blur-2xl border-l border-border shadow-2xl z-50 flex flex-col p-6 md:hidden"
           >
             <div className="flex justify-between items-center mb-8">
-              <span className="text-xl font-display font-bold text-white">Menu</span>
+              <span className="text-xl font-display font-bold text-foreground">Menu</span>
               <button
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-accent-purple rounded-lg p-1"
+                className="text-muted-foreground hover:text-foreground focus:outline-none focus:ring-2 focus:ring-accent-purple rounded-lg p-1"
                 aria-label="Close menu"
               >
                 <X className="w-6 h-6" />
@@ -159,22 +211,33 @@ export function Navbar() {
             </div>
 
             <nav className="flex flex-col gap-4">
-              {navLinks.map((link) => (
+              {navLinks.map((link) => {
+                const isActive = location.pathname === link.path || (link.path.startsWith('/#') && location.hash === link.path.substring(1));
+                return (
                 <Link
                   key={link.name}
                   to={link.path}
+                  aria-current={isActive ? "page" : undefined}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="text-lg font-medium text-gray-300 hover:text-white hover:pl-2 transition-all duration-300 border-b border-white/5 pb-2"
+                  className={`text-lg font-medium hover:pl-2 transition-all duration-300 border-b border-border pb-2 ${isActive ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
                 >
                   {link.name}
                 </Link>
-              ))}
+              )})}
             </nav>
 
             <div className="mt-auto">
-              <GlowButton className="w-full justify-center" onClick={() => setIsMobileMenuOpen(false)}>
-                Register Now
-              </GlowButton>
+              {user ? (
+                <Link to="/profile" onClick={() => setIsMobileMenuOpen(false)}>
+                  <GlowButton className="w-full justify-center">
+                    My Profile
+                  </GlowButton>
+                </Link>
+              ) : (
+                <GlowButton className="w-full justify-center" onClick={() => { setIsMobileMenuOpen(false); signInWithGoogle(); }}>
+                  Sign In
+                </GlowButton>
+              )}
             </div>
           </motion.div>
         )}

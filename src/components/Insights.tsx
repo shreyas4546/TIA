@@ -37,10 +37,10 @@ export function Insights() {
           variants={slideUpVariants}
           className="mb-16 text-center"
         >
-          <h2 className="text-3xl md:text-5xl font-display font-bold mb-4">
+          <h2 className="text-3xl md:text-5xl font-display font-bold mb-4 text-foreground">
             AI <span className="text-gradient">Insights</span>
           </h2>
-          <p className="text-gray-400 max-w-2xl mx-auto text-lg">
+          <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
             Our machine learning models analyze your spending patterns to provide actionable recommendations.
           </p>
         </motion.div>
@@ -87,14 +87,14 @@ export function Insights() {
                   key={insight.id}
                   variants={slideUpVariants}
                   whileHover={{ y: -5, scale: 1.02 }}
-                  className="p-6 flex flex-col h-full group cursor-pointer transition-all relative"
+                  className="flex flex-col h-full group cursor-pointer transition-all relative"
                 >
                   <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-6 ${insight.bg}`}>
                     <Icon className={`w-6 h-6 ${insight.color}`} />
                   </div>
                   
-                  <h3 className="text-xl font-semibold mb-3">{insight.title}</h3>
-                  <p className="text-gray-400 mb-6 flex-grow leading-relaxed">
+                  <h3 className="text-xl font-semibold mb-3 text-foreground">{insight.title}</h3>
+                  <p className="text-muted-foreground mb-6 flex-grow leading-relaxed">
                     {insight.description}
                   </p>
                   

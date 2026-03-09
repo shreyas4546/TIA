@@ -14,7 +14,7 @@ import {
 import { Activity, AlertTriangle, TrendingUp, Info } from "lucide-react";
 import { InfoTooltip } from "./ui/InfoTooltip";
 import { fadeInScaleVariants, rotateAppearVariants, slideUpVariants } from "../utils/animations";
-import { FinancialRiskMeter } from "./FinancialRiskMeter";
+import { RiskMeter } from "./RiskMeter";
 import { GlassCard } from "./ui/GlassCard";
 
 const predictionData = [
@@ -51,7 +51,7 @@ export function WowFeatures() {
   const y = useTransform(scrollYProgress, [0, 1], ["10%", "-10%"]);
 
   return (
-    <section ref={ref} className="py-12 bg-brand-surface/30 relative z-10 overflow-hidden" id="wow-features">
+    <section ref={ref} className="py-12 bg-card/30 relative z-10 overflow-hidden" id="wow-features">
       {/* Parallax Background Element */}
       <motion.div 
         style={{ y }}
@@ -66,10 +66,10 @@ export function WowFeatures() {
           variants={slideUpVariants}
           className="mb-12 text-center"
         >
-          <h2 className="text-3xl md:text-5xl font-display font-bold mb-4">
+          <h2 className="text-3xl md:text-5xl font-display font-bold mb-4 text-foreground">
             AI <span className="text-gradient">Intelligence</span>
           </h2>
-          <p className="text-gray-400 max-w-2xl mx-auto text-lg">
+          <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
             Advanced predictive models and real-time risk assessment.
           </p>
         </motion.div>
@@ -83,17 +83,17 @@ export function WowFeatures() {
             viewport={{ once: true, margin: "-50px" }}
             className="lg:col-span-2 flex flex-col"
           >
-            <GlassCard className="p-6 h-full flex flex-col">
+            <GlassCard className="h-full flex flex-col">
             <div className="mb-6 flex justify-between items-center">
               <div>
-                <h3 className="text-xl font-semibold mb-1 flex items-center gap-2">
+                <h3 className="text-xl font-semibold mb-1 flex items-center gap-2 text-foreground">
                   <TrendingUp className="w-5 h-5 text-accent-purple" />
                   AI Spending Forecast
                   <InfoTooltip content="Predicts your future spending based on historical data and current trends." position="right">
-                    <Info className="w-4 h-4 text-gray-500 hover:text-white cursor-help transition-colors" />
+                    <Info className="w-4 h-4 text-muted-foreground hover:text-foreground cursor-help transition-colors" />
                   </InfoTooltip>
                 </h3>
-                <p className="text-sm text-gray-400">Predictive modeling for the next 3 months</p>
+                <p className="text-sm text-muted-foreground">Predictive modeling for the next 3 months</p>
               </div>
               <div className="px-3 py-1 bg-accent-purple/20 text-accent-purple rounded-full text-sm font-medium animate-pulse">
                 Live Prediction
@@ -115,12 +115,12 @@ export function WowFeatures() {
                       <line x1="0" y1="0" x2="0" y2="8" stroke="#8B5CF6" strokeWidth="2" strokeOpacity="0.2" />
                     </pattern>
                   </defs>
-                  <XAxis dataKey="month" stroke="rgba(255,255,255,0.5)" tick={{ fill: "rgba(255,255,255,0.5)" }} axisLine={false} tickLine={false} />
-                  <YAxis stroke="rgba(255,255,255,0.5)" tick={{ fill: "rgba(255,255,255,0.5)" }} axisLine={false} tickLine={false} tickFormatter={(value) => `$${value}`} />
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                  <XAxis dataKey="month" stroke="var(--color-muted-foreground)" tick={{ fill: "var(--color-muted-foreground)" }} axisLine={false} tickLine={false} />
+                  <YAxis stroke="var(--color-muted-foreground)" tick={{ fill: "var(--color-muted-foreground)" }} axisLine={false} tickLine={false} tickFormatter={(value) => `$${value}`} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" vertical={false} />
                   <Tooltip
-                    contentStyle={{ backgroundColor: "#0B0F19", borderColor: "rgba(255,255,255,0.1)", borderRadius: "12px", color: "#fff" }}
-                    itemStyle={{ color: "#fff" }}
+                    contentStyle={{ backgroundColor: "var(--color-card)", borderColor: "var(--color-border)", borderRadius: "12px", color: "var(--color-foreground)" }}
+                    itemStyle={{ color: "var(--color-foreground)" }}
                   />
                   <Area type="monotone" dataKey="actual" stroke="#3B82F6" strokeWidth={3} fillOpacity={1} fill="url(#colorActual)" />
                   <Area type="monotone" dataKey="predicted" stroke="#8B5CF6" strokeWidth={3} strokeDasharray="5 5" fillOpacity={1} fill="url(#diagonalHatch)" />
@@ -140,18 +140,18 @@ export function WowFeatures() {
               viewport={{ once: true, margin: "-50px" }}
               className="flex flex-col items-center justify-center relative overflow-hidden"
             >
-              <GlassCard className="p-6 w-full h-full flex flex-col items-center justify-center relative overflow-hidden">
+              <GlassCard className="w-full h-full flex flex-col items-center justify-center relative overflow-hidden">
               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-500 via-yellow-500 to-red-500 opacity-50" />
-              <h3 className="text-xl font-semibold mb-1 flex items-center gap-2 w-full">
+              <h3 className="text-xl font-semibold mb-1 flex items-center gap-2 w-full text-foreground">
                 <AlertTriangle className="w-5 h-5 text-yellow-500" />
                 Risk Meter
                 <InfoTooltip content="Evaluates your current financial exposure and market volatility." position="right">
-                  <Info className="w-4 h-4 text-gray-500 hover:text-white cursor-help transition-colors ml-auto" />
+                  <Info className="w-4 h-4 text-muted-foreground hover:text-foreground cursor-help transition-colors ml-auto" />
                 </InfoTooltip>
               </h3>
-              <p className="text-sm text-gray-400 w-full mb-8">Real-time financial exposure</p>
+              <p className="text-sm text-muted-foreground w-full mb-8">Real-time financial exposure</p>
               
-              <FinancialRiskMeter score={45} />
+              <RiskMeter score={45} />
               </GlassCard>
             </motion.div>
 
@@ -163,20 +163,20 @@ export function WowFeatures() {
               viewport={{ once: true, margin: "-50px" }}
               className="flex flex-col"
             >
-              <GlassCard className="p-6 flex flex-col h-full">
-              <h3 className="text-xl font-semibold mb-1 flex items-center gap-2">
+              <GlassCard className="flex flex-col h-full">
+              <h3 className="text-xl font-semibold mb-1 flex items-center gap-2 text-foreground">
                 <Activity className="w-5 h-5 text-accent-cyan" />
                 AI Spending Score
                 <InfoTooltip content="A composite score out of 100 indicating your overall financial health." position="right">
-                  <Info className="w-4 h-4 text-gray-500 hover:text-white cursor-help transition-colors" />
+                  <Info className="w-4 h-4 text-muted-foreground hover:text-foreground cursor-help transition-colors" />
                 </InfoTooltip>
               </h3>
-              <p className="text-sm text-gray-400 mb-6">Your financial health metric</p>
+              <p className="text-sm text-muted-foreground mb-6">Your financial health metric</p>
               
               <div className="flex items-center justify-between">
                 <div className="relative w-24 h-24 flex items-center justify-center">
                   <svg className="w-24 h-24 transform -rotate-90" viewBox="0 0 100 100">
-                    <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="8" />
+                    <circle cx="50" cy="50" r="40" fill="none" stroke="var(--color-border)" strokeWidth="8" />
                     <motion.circle
                       cx="50"
                       cy="50"
@@ -193,7 +193,7 @@ export function WowFeatures() {
                     />
                   </svg>
                   <div className="absolute flex flex-col items-center justify-center">
-                    <span className="text-3xl font-bold text-white">85</span>
+                    <span className="text-3xl font-bold text-foreground">85</span>
                   </div>
                 </div>
                 
@@ -202,7 +202,7 @@ export function WowFeatures() {
                     <ResponsiveContainer width="100%" height="100%">
                       <LineChart data={sparklineData}>
                         <Tooltip
-                          contentStyle={{ backgroundColor: "#0B0F19", borderColor: "rgba(255,255,255,0.1)", borderRadius: "8px", color: "#fff", fontSize: "12px", padding: "4px 8px" }}
+                          contentStyle={{ backgroundColor: "var(--color-card)", borderColor: "var(--color-border)", borderRadius: "8px", color: "var(--color-foreground)", fontSize: "12px", padding: "4px 8px" }}
                           itemStyle={{ color: "#06B6D4" }}
                           cursor={false}
                           labelFormatter={() => ""}

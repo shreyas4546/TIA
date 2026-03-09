@@ -3,23 +3,25 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
 import { Navbar } from "./components/Navbar";
-import { LandingPage } from "./pages/LandingPage";
-import { DashboardPage } from "./pages/DashboardPage";
 import { ScrollToTop } from "./components/ScrollToTop";
+import { AnimatedRoutes } from "./components/AnimatedRoutes";
+import { AuthProvider } from "./contexts/AuthContext";
+import { ErrorBoundary } from "./components/ErrorBoundary";
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <ScrollToTop />
-      <div className="min-h-screen bg-[#0B0F19] text-white font-sans selection:bg-accent-purple/30">
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/dashboard" element={<DashboardPage />} />
-        </Routes>
-      </div>
-    </BrowserRouter>
+    <ErrorBoundary>
+      <AuthProvider>
+        <BrowserRouter>
+          <ScrollToTop />
+          <div className="min-h-screen bg-background text-foreground font-sans selection:bg-accent-purple/30 transition-colors duration-300">
+            <Navbar />
+            <AnimatedRoutes />
+          </div>
+        </BrowserRouter>
+      </AuthProvider>
+    </ErrorBoundary>
   );
 }

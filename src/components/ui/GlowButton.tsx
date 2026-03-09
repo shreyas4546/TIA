@@ -17,13 +17,13 @@ export function GlowButton({
   children,
   ...props
 }: GlowButtonProps) {
-  const baseStyles = "relative inline-flex items-center justify-center rounded-xl font-medium transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#0B0F19] disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden group";
+  const baseStyles = "relative inline-flex items-center justify-center rounded-xl font-medium transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden group";
   
   const variants = {
-    primary: "bg-gradient-to-r from-accent-purple to-accent-blue text-white shadow-[0_0_20px_-5px_rgba(139,92,246,0.5)] hover:shadow-[0_0_25px_0_rgba(139,92,246,0.6)] border border-white/10",
-    secondary: "bg-white/10 text-white hover:bg-white/20 border border-white/5 backdrop-blur-md",
+    primary: "bg-gradient-to-r from-accent-purple to-accent-blue text-white shadow-[0_0_20px_-5px_var(--color-accent-glow)] hover:shadow-[0_0_25px_0_var(--color-accent-glow)] border border-white/10",
+    secondary: "bg-card text-foreground hover:bg-card/80 border border-border backdrop-blur-md",
     outline: "bg-transparent border border-accent-purple/50 text-accent-purple hover:bg-accent-purple/10 hover:border-accent-purple",
-    ghost: "bg-transparent text-gray-400 hover:text-white hover:bg-white/5",
+    ghost: "bg-transparent text-muted-foreground hover:text-foreground hover:bg-card/50",
   };
 
   const sizes = {

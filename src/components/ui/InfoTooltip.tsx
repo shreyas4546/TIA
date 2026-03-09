@@ -31,7 +31,7 @@ export function InfoTooltip({ content, children, position = "top" }: InfoTooltip
             animate={{ opacity: 1, scale: 1, y: 0, x: 0 }}
             exit={{ opacity: 0, scale: 0.95 }}
             transition={{ duration: 0.15 }}
-            className={`absolute z-50 w-max max-w-xs whitespace-normal px-3 py-2 bg-[#0B0F19] border border-brand-border rounded-lg text-xs text-gray-200 shadow-xl pointer-events-none ${positionClasses[position]}`}
+            className={`absolute z-50 w-max max-w-xs whitespace-normal px-3 py-2 bg-card border border-border rounded-lg text-xs text-muted-foreground shadow-xl pointer-events-none ${positionClasses[position]}`}
           >
             {content}
           </motion.div>

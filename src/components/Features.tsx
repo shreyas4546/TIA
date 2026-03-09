@@ -39,10 +39,10 @@ export function Features() {
           variants={slideUpVariants}
           className="mb-16 text-center"
         >
-          <h2 className="text-3xl md:text-5xl font-display font-bold mb-4">
+          <h2 className="text-3xl md:text-5xl font-display font-bold mb-4 text-foreground">
             Smart <span className="text-gradient">Capabilities</span>
           </h2>
-          <p className="text-gray-400 max-w-2xl mx-auto text-lg">
+          <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
             Our platform leverages advanced AI to automate your financial life and protect your assets.
           </p>
         </motion.div>
@@ -59,18 +59,19 @@ export function Features() {
             return (
               <GlassCard
                 key={feature.title}
-                className="p-8 flex flex-col items-center text-center group transition-all"
+                variants={slideUpVariants}
+                className="flex flex-col items-center text-center group transition-all"
               >
                 <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-accent-purple/20 to-accent-blue/20 flex items-center justify-center mb-6 group-hover:shadow-[0_0_20px_var(--color-accent-glow)] transition-all duration-300">
-                  <Icon className="w-8 h-8 text-white transition-all duration-300 group-hover:scale-110 group-hover:drop-shadow-[0_0_12px_rgba(139,92,246,0.8)]" />
+                  <Icon className="w-8 h-8 text-foreground transition-all duration-300 group-hover:scale-110 group-hover:drop-shadow-[0_0_12px_rgba(139,92,246,0.8)]" />
                 </div>
-                <h3 className="text-xl font-semibold mb-4 flex items-center justify-center gap-2">
+                <h3 className="text-xl font-semibold mb-4 flex items-center justify-center gap-2 text-foreground">
                   {feature.title}
                   <InfoTooltip content={`Learn more about ${feature.title} and how it can help you.`}>
-                    <Info className="w-4 h-4 text-gray-500 hover:text-white cursor-help transition-colors" />
+                    <Info className="w-4 h-4 text-muted-foreground hover:text-foreground cursor-help transition-colors" />
                   </InfoTooltip>
                 </h3>
-                <p className="text-gray-400 leading-relaxed">
+                <p className="text-muted-foreground leading-relaxed">
                   {feature.description}
                 </p>
               </GlassCard>

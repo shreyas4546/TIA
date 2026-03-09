@@ -55,22 +55,20 @@ export function AIAnalysisReveal({ children, className = "" }: AIAnalysisRevealP
           <GlassCard
             key="loading-container"
             hoverEffect={false}
-            className="absolute inset-0 flex flex-col items-center justify-center z-20 overflow-hidden !bg-[#0B0F19]/95 !backdrop-blur-xl border-white/10"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0, scale: 0.98, filter: "blur(10px)" }}
+            transition={{ duration: 0.8, ease: "easeInOut" }}
+            className="absolute inset-0 flex flex-col items-center justify-center z-20 overflow-hidden !bg-card/95 !backdrop-blur-xl border-border"
           >
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0, scale: 0.98, filter: "blur(10px)" }}
-              transition={{ duration: 0.8, ease: "easeInOut" }}
-              className="w-full h-full flex flex-col items-center justify-center"
-            >
+            <div className="w-full h-full flex flex-col items-center justify-center">
               {/* Background Effects */}
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-accent-purple/10 via-transparent to-transparent opacity-50" />
               
               {/* Scanning Line */}
               <motion.div
-                initial={{ top: "-10%" }}
-                animate={{ top: "110%" }}
+                initial={{ y: "-10%" }}
+                animate={{ y: "110%" }}
                 transition={{ duration: 2.5, repeat: Infinity, ease: "linear" }}
                 className="absolute left-0 right-0 h-24 bg-gradient-to-b from-transparent via-accent-cyan/10 to-transparent w-full pointer-events-none"
               >
@@ -97,7 +95,7 @@ export function AIAnalysisReveal({ children, className = "" }: AIAnalysisRevealP
                   transition={{ duration: 2, repeat: Infinity }}
                   className="relative z-10 w-20 h-20 bg-gradient-to-br from-accent-purple/20 to-accent-blue/20 rounded-full flex items-center justify-center backdrop-blur-md border border-white/10 shadow-[0_0_30px_rgba(139,92,246,0.3)]"
                 >
-                  <Brain className="w-8 h-8 text-white" />
+                  <Brain className="w-8 h-8 text-foreground" />
                 </motion.div>
 
                 {/* Orbiting Particles */}
@@ -136,10 +134,10 @@ export function AIAnalysisReveal({ children, className = "" }: AIAnalysisRevealP
                         <ScanLine className="w-4 h-4 animate-pulse" />
                         Analyzing Data
                       </p>
-                      <div className="flex gap-1 mt-2">
-                        <motion.div animate={{ height: [4, 12, 4] }} transition={{ duration: 1, repeat: Infinity, delay: 0 }} className="w-1 bg-accent-purple rounded-full" />
-                        <motion.div animate={{ height: [4, 16, 4] }} transition={{ duration: 1, repeat: Infinity, delay: 0.1 }} className="w-1 bg-accent-purple rounded-full" />
-                        <motion.div animate={{ height: [4, 10, 4] }} transition={{ duration: 1, repeat: Infinity, delay: 0.2 }} className="w-1 bg-accent-purple rounded-full" />
+                      <div className="flex gap-1 mt-2 items-end h-4">
+                        <motion.div animate={{ scaleY: [0.25, 0.75, 0.25] }} transition={{ duration: 1, repeat: Infinity, delay: 0 }} className="w-1 h-full bg-accent-purple rounded-full origin-bottom" />
+                        <motion.div animate={{ scaleY: [0.25, 1, 0.25] }} transition={{ duration: 1, repeat: Infinity, delay: 0.1 }} className="w-1 h-full bg-accent-purple rounded-full origin-bottom" />
+                        <motion.div animate={{ scaleY: [0.25, 0.625, 0.25] }} transition={{ duration: 1, repeat: Infinity, delay: 0.2 }} className="w-1 h-full bg-accent-purple rounded-full origin-bottom" />
                       </div>
                     </motion.div>
                   ) : (
@@ -150,15 +148,15 @@ export function AIAnalysisReveal({ children, className = "" }: AIAnalysisRevealP
                       exit={{ opacity: 0, y: -20, filter: "blur(8px)" }}
                       className="flex flex-col items-center"
                     >
-                      <p className="text-gray-400 text-xs uppercase tracking-widest mb-1">Processing</p>
-                      <h3 className="text-2xl font-display font-bold text-transparent bg-clip-text bg-gradient-to-r from-white via-accent-cyan to-white">
+                      <p className="text-muted-foreground text-xs uppercase tracking-widest mb-1">Processing</p>
+                      <h3 className="text-2xl font-display font-bold text-transparent bg-clip-text bg-gradient-to-r from-foreground via-accent-cyan to-foreground">
                         {keywords[currentKeyword]}
                       </h3>
                     </motion.div>
                   )}
                 </AnimatePresence>
               </div>
-            </motion.div>
+            </div>
           </GlassCard>
         ) : (
           <motion.div

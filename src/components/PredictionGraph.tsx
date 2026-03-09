@@ -1,4 +1,5 @@
-import { motion } from "motion/react";
+import { useMemo } from "react";
+import { motion, useReducedMotion } from "motion/react";
 import {
   AreaChart,
   Area,
@@ -7,38 +8,29 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  TooltipProps,
 } from "recharts";
 import { Info, CheckCircle2 } from "lucide-react";
 import { InfoTooltip } from "./ui/InfoTooltip";
 import { fadeInScaleVariants } from "../utils/animations";
 import { GlassCard } from "./ui/GlassCard";
-
-// Mock data for the prediction graph
-const data = [
-  { month: "Jan", actual: 4000, predicted: 4000 },
-  { month: "Feb", actual: 3000, predicted: 3000 },
-  { month: "Mar", actual: 2000, predicted: 2000 },
-  { month: "Apr", actual: 2780, predicted: 2780 },
-  { month: "May", actual: 1890, predicted: 1890 },
-  { month: "Jun", actual: 2390, predicted: 2390 },
-  { month: "Jul", actual: null, predicted: 3490 },
-  { month: "Aug", actual: null, predicted: 3200 },
-  { month: "Sep", actual: null, predicted: 2800 },
-  { month: "Oct", actual: null, predicted: 3100 },
-  { month: "Nov", actual: null, predicted: 2900 },
-  { month: "Dec", actual: null, predicted: 3500 },
-];
+import predictionsData from "../mock/predictions.json";
+import { generateForecast } from "../utils/forecast";
 
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
-    const isPredicted = payload[0].name === "predicted";
-    const value = payload[0].value;
+    // Find if we are hovering over a predicted point
+    const predictedPayload = payload.find((p: any) => p.dataKey === "predicted");
+    const actualPayload = payload.find((p: any) => p.dataKey === "actual");
     
+    const isPredicted = !!predictedPayload && predictedPayload.value != null;
+    const value = isPredicted ? predictedPayload.value : actualPayload?.value;
+    
+    if (value == null) return null;
+
     return (
-      <div className="p-4 border border-white/10 rounded-xl shadow-xl bg-[#0B0F19]/90 backdrop-blur-md">
-        <p className="text-gray-400 text-xs mb-1">{label}</p>
-        <p className="text-lg font-bold text-white mb-2">
+      <div className="p-4 border border-border rounded-xl shadow-xl bg-card/90 backdrop-blur-md">
+        <p className="text-muted-foreground text-xs mb-1">{label}</p>
+        <p className="text-lg font-bold text-foreground mb-2">
           ${value?.toLocaleString()}
         </p>
         <div className="flex items-center gap-2 text-xs">
@@ -50,7 +42,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
           </span>
         </div>
         {isPredicted && (
-          <p className="text-xs text-gray-500 mt-2 max-w-[150px] leading-relaxed">
+          <p className="text-xs text-muted-foreground mt-2 max-w-[150px] leading-relaxed">
             Projected based on seasonal trends and recurring expenses.
           </p>
         )}
@@ -61,6 +53,13 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 };
 
 export function PredictionGraph() {
+  const shouldReduceMotion = useReducedMotion();
+  const isAnimationActive = !shouldReduceMotion;
+
+  const data = useMemo(() => {
+    return generateForecast(predictionsData, ["Sep", "Oct", "Nov", "Dec"]);
+  }, []);
+
   return (
     <motion.div
       variants={fadeInScaleVariants}
@@ -69,22 +68,22 @@ export function PredictionGraph() {
       viewport={{ once: true, margin: "-50px" }}
       className="h-full"
     >
-      <GlassCard className="p-6 flex flex-col h-full relative overflow-hidden">
+      <GlassCard className="flex flex-col h-full relative overflow-hidden">
         <div className="mb-6 flex justify-between items-start">
           <div>
-            <h3 className="text-lg font-semibold mb-1 flex items-center gap-2 text-white">
+            <h3 className="text-lg font-semibold mb-1 flex items-center gap-2 text-foreground">
               AI Spending Prediction
               <InfoTooltip content="AI-powered forecast of your future spending based on historical patterns." position="right">
-                <Info className="w-4 h-4 text-gray-500 hover:text-white cursor-help transition-colors" />
+                <Info className="w-4 h-4 text-muted-foreground hover:text-foreground cursor-help transition-colors" />
               </InfoTooltip>
             </h3>
-            <p className="text-sm text-gray-400 mb-2">Forecast for the next 6 months</p>
+            <p className="text-sm text-muted-foreground mb-2">Forecast for the next 4 months</p>
             
             {/* Confidence Micro-Animation */}
             <motion.div 
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 2.5, duration: 0.5 }}
+              transition={{ delay: isAnimationActive ? 2.5 : 0, duration: 0.5 }}
               className="flex items-center gap-3 bg-accent-cyan/5 border border-accent-cyan/20 rounded-lg px-3 py-1.5 w-fit"
             >
               <div className="flex items-center gap-1.5 text-xs font-medium text-accent-cyan">
@@ -93,10 +92,10 @@ export function PredictionGraph() {
               </div>
               <div className="w-16 h-1 bg-gray-700 rounded-full overflow-hidden">
                 <motion.div 
-                  initial={{ width: 0 }}
-                  animate={{ width: "87%" }}
-                  transition={{ delay: 2.8, duration: 1, ease: "easeOut" }}
-                  className="h-full bg-accent-cyan shadow-[0_0_8px_rgba(6,182,212,0.8)]"
+                  initial={{ scaleX: 0 }}
+                  animate={{ scaleX: 0.87 }}
+                  transition={{ delay: isAnimationActive ? 2.8 : 0, duration: 1, ease: "easeOut" }}
+                  className="h-full w-full bg-accent-cyan shadow-[0_0_8px_rgba(6,182,212,0.8)] origin-left"
                 />
               </div>
             </motion.div>
@@ -123,6 +122,10 @@ export function PredictionGraph() {
                   <stop offset="5%" stopColor="#06B6D4" stopOpacity={0.3} />
                   <stop offset="95%" stopColor="#06B6D4" stopOpacity={0} />
                 </linearGradient>
+                <linearGradient id="colorBand" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#06B6D4" stopOpacity={0.15} />
+                  <stop offset="95%" stopColor="#06B6D4" stopOpacity={0.05} />
+                </linearGradient>
                 <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
                   <feGaussianBlur stdDeviation="4" result="coloredBlur" />
                   <feMerge>
@@ -131,24 +134,36 @@ export function PredictionGraph() {
                   </feMerge>
                 </filter>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" vertical={false} />
               <XAxis 
                 dataKey="month" 
-                stroke="rgba(255,255,255,0.3)" 
-                tick={{ fill: "rgba(255,255,255,0.5)", fontSize: 12 }} 
+                stroke="var(--color-muted-foreground)" 
+                tick={{ fill: "var(--color-muted-foreground)", fontSize: 12 }} 
                 axisLine={false} 
                 tickLine={false} 
                 dy={10}
               />
               <YAxis 
-                stroke="rgba(255,255,255,0.3)" 
-                tick={{ fill: "rgba(255,255,255,0.5)", fontSize: 12 }} 
+                stroke="var(--color-muted-foreground)" 
+                tick={{ fill: "var(--color-muted-foreground)", fontSize: 12 }} 
                 axisLine={false} 
                 tickLine={false} 
                 tickFormatter={(value) => `$${value}`} 
               />
-              <Tooltip content={<CustomTooltip />} cursor={{ stroke: "rgba(255,255,255,0.1)", strokeWidth: 2 }} />
+              <Tooltip content={<CustomTooltip />} cursor={{ stroke: "var(--color-border)", strokeWidth: 2 }} />
               
+              {/* Forecast Band */}
+              <Area 
+                type="monotone" 
+                dataKey={["forecastMin", "forecastMax"] as any} 
+                stroke="none" 
+                fill="url(#colorBand)" 
+                isAnimationActive={isAnimationActive}
+                animationBegin={1500}
+                animationDuration={2000}
+                animationEasing="ease-out"
+              />
+
               {/* Historical Data Line */}
               <Area 
                 type="monotone" 
@@ -157,9 +172,10 @@ export function PredictionGraph() {
                 strokeWidth={3} 
                 fillOpacity={1} 
                 fill="url(#colorActual)" 
+                isAnimationActive={isAnimationActive}
                 animationDuration={1500}
                 animationEasing="ease-in-out"
-                activeDot={{ r: 6, fill: "#0B0F19", stroke: "#8B5CF6", strokeWidth: 2 }}
+                activeDot={{ r: 6, fill: "var(--color-background)", stroke: "#8B5CF6", strokeWidth: 2 }}
               />
               
               {/* Predicted Data Line */}
@@ -171,6 +187,7 @@ export function PredictionGraph() {
                 strokeDasharray="5 5" 
                 fillOpacity={1} 
                 fill="url(#colorPredicted)" 
+                isAnimationActive={isAnimationActive}
                 animationBegin={1500}
                 animationDuration={2000}
                 animationEasing="ease-out"
