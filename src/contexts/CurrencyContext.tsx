@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
-import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, updateDoc, serverTimestamp, getDoc } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 
 type CurrencyCode = 'USD' | 'INR' | 'EUR' | 'GBP' | 'JPY';
@@ -34,8 +34,25 @@ export function CurrencyProvider({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
   const [currency, setCurrencyState] = useState<CurrencyCode>('USD');
 
-  // We could listen to user preferences here, but for simplicity, we'll just use local state
-  // and update Firebase when it changes if the user is logged in.
+  useEffect(() => {
+    const fetchUserCurrency = async () => {
+      if (user) {
+        try {
+          const userDoc = await getDoc(doc(db, 'users', user.uid));
+          if (userDoc.exists()) {
+            const data = userDoc.data();
+            if (data.preferences?.currency) {
+              setCurrencyState(data.preferences.currency);
+            }
+          }
+        } catch (error) {
+          console.error("Failed to fetch user currency preference", error);
+        }
+      }
+    };
+
+    fetchUserCurrency();
+  }, [user]);
 
   const setCurrency = async (newCurrency: CurrencyCode) => {
     setCurrencyState(newCurrency);

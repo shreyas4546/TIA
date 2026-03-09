@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { useAuth } from '../contexts/AuthContext';
+import { useCurrency } from '../contexts/CurrencyContext';
 import { doc, onSnapshot, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { db, handleFirestoreError, OperationType } from '../lib/firebase';
 import { Settings, User as UserIcon, Bell, CreditCard, LogOut, Moon, Sun, Monitor, Plus, Trash2 } from 'lucide-react';
@@ -8,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 
 export function ProfilePage() {
   const { user, logout } = useAuth();
+  const { setCurrency } = useCurrency();
   const [profileData, setProfileData] = useState<any>(null);
   const [activeTab, setActiveTab] = useState('settings');
   const [isUpdating, setIsUpdating] = useState(false);
@@ -238,10 +240,15 @@ export function ProfilePage() {
                     <select
                       disabled={isUpdating}
                       value={profileData?.preferences?.currency || 'USD'}
-                      onChange={(e) => handleUpdatePreference('currency', e.target.value)}
+                      onChange={(e) => {
+                        const newCurrency = e.target.value as any;
+                        handleUpdatePreference('currency', newCurrency);
+                        setCurrency(newCurrency);
+                      }}
                       className="bg-background border border-border rounded-lg px-4 py-2 w-full max-w-xs focus:outline-none focus:ring-2 focus:ring-primary"
                     >
                       <option value="USD">USD ($)</option>
+                      <option value="INR">INR (₹)</option>
                       <option value="EUR">EUR (€)</option>
                       <option value="GBP">GBP (£)</option>
                       <option value="JPY">JPY (¥)</option>
