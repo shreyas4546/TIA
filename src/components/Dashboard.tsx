@@ -26,16 +26,15 @@ import { GlassCard } from "./ui/GlassCard";
 import { ErrorBoundary } from "./ErrorBoundary";
 import { CurrencySwitcher } from "./CurrencySwitcher";
 import { useCurrency } from "../contexts/CurrencyContext";
-
-const PredictionGraph = React.lazy(() => import("./PredictionGraph").then(module => ({ default: module.PredictionGraph })));
-const FinancialHologramDashboard = React.lazy(() => import("./FinancialHologramDashboard").then(module => ({ default: module.FinancialHologramDashboard })));
+import { PredictionGraph } from "./PredictionGraph";
+import { FinancialHologramDashboard } from "./FinancialHologramDashboard";
 
 const COLORS = ["#8B5CF6", "#3B82F6", "#06B6D4", "#10B981", "#F59E0B"];
 
 export function Dashboard() {
   const [selectedMonth, setSelectedMonth] = useState<any>(null);
   const [isHoloAnimated, setIsHoloAnimated] = useState(true);
-  const { formatAmount } = useCurrency();
+  const { currency, formatAmount } = useCurrency();
 
   return (
     <section className="py-24 relative z-10 overflow-hidden">
@@ -92,9 +91,7 @@ export function Dashboard() {
               </div>
               <div className="flex-1 flex items-center justify-center">
                 <ErrorBoundary>
-                  <Suspense fallback={<div className="w-full aspect-square animate-pulse bg-surface-hover rounded-full" />}>
-                    <FinancialHologramDashboard isAnimated={isHoloAnimated} />
-                  </Suspense>
+                  <FinancialHologramDashboard key={currency} isAnimated={isHoloAnimated} />
                 </ErrorBoundary>
               </div>
             </GlassCard>
@@ -144,10 +141,11 @@ export function Dashboard() {
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" vertical={false} />
                     <XAxis dataKey="name" stroke="var(--color-muted-foreground)" tick={{ fill: "var(--color-muted-foreground)", fontSize: 12 }} axisLine={false} tickLine={false} dy={10} />
-                    <YAxis stroke="var(--color-muted-foreground)" tick={{ fill: "var(--color-muted-foreground)", fontSize: 12 }} axisLine={false} tickLine={false} tickFormatter={(value) => `${value}`} />
+                    <YAxis stroke="var(--color-muted-foreground)" tick={{ fill: "var(--color-muted-foreground)", fontSize: 12 }} axisLine={false} tickLine={false} tickFormatter={(value) => formatAmount(value)} />
                     <Tooltip
                       contentStyle={{ backgroundColor: "var(--color-card)", borderColor: "var(--color-border)", borderRadius: "12px", color: "var(--color-foreground)", backdropFilter: "blur(10px)" }}
                       itemStyle={{ color: "#8B5CF6" }}
+                      formatter={(value: any) => [formatAmount(value), "Amount"]}
                       cursor={{ stroke: "var(--color-border)", strokeWidth: 2 }}
                     />
                     <Line 
@@ -256,16 +254,7 @@ export function Dashboard() {
           <div className="lg:col-span-2 h-full min-h-[400px]">
             <AIAnalysisReveal className="h-full">
               <ErrorBoundary>
-                <Suspense fallback={
-                  <div className="h-full flex items-center justify-center p-8">
-                    <div className="animate-pulse flex flex-col items-center gap-4">
-                      <div className="w-12 h-12 rounded-full border-4 border-accent-cyan/30 border-t-accent-cyan animate-spin" />
-                      <p className="text-muted-foreground text-sm">Loading AI Prediction...</p>
-                    </div>
-                  </div>
-                }>
-                  <PredictionGraph />
-                </Suspense>
+                <PredictionGraph key={currency} />
               </ErrorBoundary>
             </AIAnalysisReveal>
           </div>
@@ -297,11 +286,12 @@ export function Dashboard() {
                   <BarChart data={weeklyData} margin={{ top: 5, right: 0, bottom: 5, left: -20 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" vertical={false} />
                     <XAxis dataKey="day" stroke="var(--color-muted-foreground)" tick={{ fill: "var(--color-muted-foreground)", fontSize: 12 }} axisLine={false} tickLine={false} dy={10} />
-                    <YAxis stroke="var(--color-muted-foreground)" tick={{ fill: "var(--color-muted-foreground)", fontSize: 12 }} axisLine={false} tickLine={false} tickFormatter={(value) => `${value}`} />
+                    <YAxis stroke="var(--color-muted-foreground)" tick={{ fill: "var(--color-muted-foreground)", fontSize: 12 }} axisLine={false} tickLine={false} tickFormatter={(value) => formatAmount(value)} />
                     <Tooltip
                       cursor={{ fill: "var(--color-surface-hover)" }}
                       contentStyle={{ backgroundColor: "var(--color-card)", borderColor: "var(--color-border)", borderRadius: "12px", color: "var(--color-foreground)", backdropFilter: "blur(10px)" }}
                       itemStyle={{ color: "#3B82F6" }}
+                      formatter={(value: any) => [formatAmount(value), "Spent"]}
                     />
                     <Bar 
                       dataKey="spent" 

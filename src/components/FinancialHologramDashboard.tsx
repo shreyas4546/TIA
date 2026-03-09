@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "motion/react";
 import { hologramData } from "../mock/hologram";
+import { useCurrency } from "../contexts/CurrencyContext";
 
 export interface FinancialHologramDashboardProps {
   isAnimated?: boolean;
@@ -12,6 +13,7 @@ export function FinancialHologramDashboard({
   className = ""
 }: FinancialHologramDashboardProps) {
   const shouldAnimate = isAnimated;
+  const { formatAmount } = useCurrency();
 
   return (
     <div className={`relative w-full max-w-md mx-auto aspect-square flex items-center justify-center ${className}`}>
@@ -68,11 +70,11 @@ export function FinancialHologramDashboard({
           <text x="200" y="165" fill="#94A3B8" fontSize="14" letterSpacing="2" className="font-sans uppercase">
             Total Balance
           </text>
-          <text x="200" y="205" fill="#FFFFFF" fontSize="38" fontWeight="bold" className="font-display" filter="url(#glow)">
-            ${hologramData.totalBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+          <text x="200" y="205" fill="#FFFFFF" fontSize="32" fontWeight="bold" className="font-display" filter="url(#glow)">
+            {formatAmount(hologramData.totalBalance)}
           </text>
           <text x="200" y="245" fill="#10B981" fontSize="14" className="font-sans font-medium tracking-wide">
-            +{hologramData.monthlySpending.toLocaleString()} / mo
+            +{formatAmount(hologramData.monthlySpending)} / mo
           </text>
         </g>
       </svg>

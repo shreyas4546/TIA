@@ -15,8 +15,10 @@ import { fadeInScaleVariants } from "../utils/animations";
 import { GlassCard } from "./ui/GlassCard";
 import predictionsData from "../mock/predictions.json";
 import { generateForecast } from "../utils/forecast";
+import { useCurrency } from "../contexts/CurrencyContext";
 
 const CustomTooltip = ({ active, payload, label }: any) => {
+  const { formatAmount } = useCurrency();
   if (active && payload && payload.length) {
     // Find if we are hovering over a predicted point
     const predictedPayload = payload.find((p: any) => p.dataKey === "predicted");
@@ -31,7 +33,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
       <div className="p-4 border border-border rounded-xl shadow-xl bg-card/90 backdrop-blur-md">
         <p className="text-muted-foreground text-xs mb-1">{label}</p>
         <p className="text-lg font-bold text-foreground mb-2">
-          ${value?.toLocaleString()}
+          {formatAmount(value)}
         </p>
         <div className="flex items-center gap-2 text-xs">
           <div 
@@ -55,6 +57,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 export function PredictionGraph() {
   const shouldReduceMotion = useReducedMotion();
   const isAnimationActive = !shouldReduceMotion;
+  const { formatAmount } = useCurrency();
 
   const data = useMemo(() => {
     return generateForecast(predictionsData, ["Sep", "Oct", "Nov", "Dec"]);
@@ -148,7 +151,7 @@ export function PredictionGraph() {
                 tick={{ fill: "var(--color-muted-foreground)", fontSize: 12 }} 
                 axisLine={false} 
                 tickLine={false} 
-                tickFormatter={(value) => `$${value}`} 
+                tickFormatter={(value) => formatAmount(value)} 
               />
               <Tooltip content={<CustomTooltip />} cursor={{ stroke: "var(--color-border)", strokeWidth: 2 }} />
               

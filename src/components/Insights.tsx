@@ -4,6 +4,7 @@ import { AlertTriangle, Zap, TrendingUp, ArrowRight } from "lucide-react";
 import { aiInsights } from "../mock/data";
 import { slideUpVariants, staggerContainerVariants, lineDrawVariants } from "../utils/animations";
 import { GlassCard } from "./ui/GlassCard";
+import { useCurrency } from "../contexts/CurrencyContext";
 
 const iconMap = {
   "alert-triangle": AlertTriangle,
@@ -13,6 +14,7 @@ const iconMap = {
 
 export function Insights() {
   const ref = useRef(null);
+  const { formatAmount } = useCurrency();
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start end", "end start"]
@@ -95,7 +97,7 @@ export function Insights() {
                   
                   <h3 className="text-xl font-semibold mb-3 text-foreground">{insight.title}</h3>
                   <p className="text-muted-foreground mb-6 flex-grow leading-relaxed">
-                    {insight.description}
+                    {insight.description.replace(/\$(\d+)/g, (_, amount) => formatAmount(Number(amount)))}
                   </p>
                   
                   <div className="flex items-center gap-2 text-sm font-medium text-accent-cyan group-hover:text-accent-purple transition-colors mt-auto">

@@ -16,6 +16,7 @@ import { InfoTooltip } from "./ui/InfoTooltip";
 import { fadeInScaleVariants, rotateAppearVariants, slideUpVariants } from "../utils/animations";
 import { RiskMeter } from "./RiskMeter";
 import { GlassCard } from "./ui/GlassCard";
+import { useCurrency } from "../contexts/CurrencyContext";
 
 const predictionData = [
   { month: "Jan", actual: 4000, predicted: null },
@@ -42,6 +43,7 @@ const sparklineData = [
 
 export function WowFeatures() {
   const ref = useRef(null);
+  const { formatAmount } = useCurrency();
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start end", "end start"]
@@ -116,11 +118,12 @@ export function WowFeatures() {
                     </pattern>
                   </defs>
                   <XAxis dataKey="month" stroke="var(--color-muted-foreground)" tick={{ fill: "var(--color-muted-foreground)" }} axisLine={false} tickLine={false} />
-                  <YAxis stroke="var(--color-muted-foreground)" tick={{ fill: "var(--color-muted-foreground)" }} axisLine={false} tickLine={false} tickFormatter={(value) => `$${value}`} />
+                  <YAxis stroke="var(--color-muted-foreground)" tick={{ fill: "var(--color-muted-foreground)" }} axisLine={false} tickLine={false} tickFormatter={(value) => formatAmount(value)} />
                   <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" vertical={false} />
                   <Tooltip
                     contentStyle={{ backgroundColor: "var(--color-card)", borderColor: "var(--color-border)", borderRadius: "12px", color: "var(--color-foreground)" }}
                     itemStyle={{ color: "var(--color-foreground)" }}
+                    formatter={(value: any) => [formatAmount(value), "Amount"]}
                   />
                   <Area type="monotone" dataKey="actual" stroke="#3B82F6" strokeWidth={3} fillOpacity={1} fill="url(#colorActual)" />
                   <Area type="monotone" dataKey="predicted" stroke="#8B5CF6" strokeWidth={3} strokeDasharray="5 5" fillOpacity={1} fill="url(#diagonalHatch)" />

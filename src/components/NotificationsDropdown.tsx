@@ -2,8 +2,10 @@ import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Bell, X, CheckCircle2, AlertTriangle, Info, Calendar } from "lucide-react";
 import { mockNotifications } from "../mock/data";
+import { useCurrency } from "../contexts/CurrencyContext";
 
 export function NotificationsDropdown() {
+  const { formatAmount } = useCurrency();
   const [isOpen, setIsOpen] = useState(false);
   const [notifications, setNotifications] = useState(mockNotifications);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -144,7 +146,7 @@ export function NotificationsDropdown() {
                             </span>
                           </div>
                           <p className={`text-xs leading-relaxed ${!notification.read ? "text-muted-foreground" : "text-muted-foreground/70"}`}>
-                            {notification.message}
+                            {notification.message.replace(/\$(\d+)/g, (_, amount) => formatAmount(Number(amount)))}
                           </p>
                           {notification.type === "warning" && (
                             <div className="mt-2 flex items-center gap-1 text-[10px] font-medium text-amber-500 bg-amber-500/10 w-fit px-2 py-1 rounded-md">
