@@ -4,8 +4,10 @@ import { GlassCard } from "./ui/GlassCard";
 import { GlowButton } from "./ui/GlowButton";
 import { goalsData } from "../mock/data";
 import { fadeInScaleVariants } from "../utils/animations";
+import { useCurrency } from "../contexts/CurrencyContext";
 
 export function FinancialGoals() {
+  const { formatAmount } = useCurrency();
   return (
     <motion.div
       variants={fadeInScaleVariants}
@@ -45,7 +47,7 @@ export function FinancialGoals() {
                   </div>
                   <div className="text-right">
                     <div className="text-sm font-bold text-foreground">
-                      ${goal.current.toLocaleString()} <span className="text-muted-foreground font-normal">/ ${goal.target.toLocaleString()}</span>
+                      {formatAmount(goal.current)} <span className="text-muted-foreground font-normal">/ {formatAmount(goal.target)}</span>
                     </div>
                     <div className="text-[10px] font-medium text-accent-purple uppercase tracking-wider">
                       {progress.toFixed(0)}% Complete

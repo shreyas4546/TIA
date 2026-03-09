@@ -1,0 +1,29 @@
+{
+  "nav": {
+    "home": "होम",
+    "dashboard": "डैशबोर्ड",
+    "insights": "इनसाइट्स",
+    "signIn": "साइन इन",
+    "myProfile": "मेरी प्रोफ़ाइल"
+  },
+  "hero": {
+    "title": "एआई-पावर्ड वित्तीय बुद्धिमत्ता",
+    "subtitle": "बुद्धिमान अंतर्दृष्टि, स्वचालित ट्रैकिंग और व्यक्तिगत सिफारिशों के साथ अपने धन पर नियंत्रण रखें।",
+    "getStarted": "शुरू करें",
+    "learnMore": "और जानें"
+  },
+  "profile": {
+    "accountSettings": "खाता सेटिंग",
+    "preferences": "प्राथमिकताएं",
+    "linkedAccounts": "लिंक किए गए खाते",
+    "signOut": "साइन आउट",
+    "theme": "थीम",
+    "light": "लाइट",
+    "dark": "डार्क",
+    "system": "सिस्टम",
+    "pushNotifications": "पुश सूचनाएं",
+    "defaultCurrency": "डिफ़ॉल्ट मुद्रा",
+    "linkAccount": "खाता लिंक करें",
+    "noAccounts": "कोई खाता लिंक नहीं है"
+  }
+}

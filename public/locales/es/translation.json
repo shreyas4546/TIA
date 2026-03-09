@@ -1,0 +1,29 @@
+{
+  "nav": {
+    "home": "Inicio",
+    "dashboard": "Panel",
+    "insights": "Perspectivas",
+    "signIn": "Iniciar sesión",
+    "myProfile": "Mi Perfil"
+  },
+  "hero": {
+    "title": "Inteligencia Financiera Impulsada por IA",
+    "subtitle": "Tome el control de su riqueza con perspectivas inteligentes, seguimiento automatizado y recomendaciones personalizadas.",
+    "getStarted": "Empezar",
+    "learnMore": "Saber más"
+  },
+  "profile": {
+    "accountSettings": "Configuración de la cuenta",
+    "preferences": "Preferencias",
+    "linkedAccounts": "Cuentas vinculadas",
+    "signOut": "Cerrar sesión",
+    "theme": "Tema",
+    "light": "Claro",
+    "dark": "Oscuro",
+    "system": "Sistema",
+    "pushNotifications": "Notificaciones Push",
+    "defaultCurrency": "Moneda predeterminada",
+    "linkAccount": "Vincular cuenta",
+    "noAccounts": "No hay cuentas vinculadas"
+  }
+}

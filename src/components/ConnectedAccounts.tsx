@@ -5,6 +5,7 @@ import { GlassCard } from "./ui/GlassCard";
 import { GlowButton } from "./ui/GlowButton";
 import { BankLinkModal } from "./BankLinkModal";
 import { slideUpVariants } from "../utils/animations";
+import { useCurrency } from "../contexts/CurrencyContext";
 
 type Account = {
   id: string;
@@ -41,6 +42,7 @@ const initialAccounts: Account[] = [
 ];
 
 export function ConnectedAccounts() {
+  const { formatAmount } = useCurrency();
   const [accounts, setAccounts] = useState<Account[]>(initialAccounts);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
@@ -149,7 +151,7 @@ export function ConnectedAccounts() {
                 </div>
                 <div className="text-right">
                   <div className="text-sm font-bold text-foreground">
-                    ${account.balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    {formatAmount(account.balance)}
                   </div>
                   <button className="text-[10px] font-medium text-muted-foreground hover:text-foreground uppercase tracking-wider mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
                     Manage
@@ -163,7 +165,7 @@ export function ConnectedAccounts() {
         <div className="mt-6 pt-4 border-t border-border flex justify-between items-center">
           <div className="text-sm text-muted-foreground">
             Total Balance: <span className="font-bold text-foreground ml-1">
-              ${accounts.reduce((sum, acc) => sum + acc.balance, 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              {formatAmount(accounts.reduce((sum, acc) => sum + acc.balance, 0))}
             </span>
           </div>
           <button className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1">

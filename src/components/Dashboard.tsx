@@ -24,6 +24,8 @@ import { FinancialGoals } from "./FinancialGoals";
 import { ConnectedAccounts } from "./ConnectedAccounts";
 import { GlassCard } from "./ui/GlassCard";
 import { ErrorBoundary } from "./ErrorBoundary";
+import { CurrencySwitcher } from "./CurrencySwitcher";
+import { useCurrency } from "../contexts/CurrencyContext";
 
 const PredictionGraph = React.lazy(() => import("./PredictionGraph").then(module => ({ default: module.PredictionGraph })));
 const FinancialHologramDashboard = React.lazy(() => import("./FinancialHologramDashboard").then(module => ({ default: module.FinancialHologramDashboard })));
@@ -33,6 +35,7 @@ const COLORS = ["#8B5CF6", "#3B82F6", "#06B6D4", "#10B981", "#F59E0B"];
 export function Dashboard() {
   const [selectedMonth, setSelectedMonth] = useState<any>(null);
   const [isHoloAnimated, setIsHoloAnimated] = useState(true);
+  const { formatAmount } = useCurrency();
 
   return (
     <section className="py-24 relative z-10 overflow-hidden">
@@ -53,7 +56,8 @@ export function Dashboard() {
             </p>
           </div>
           
-          <div className="flex gap-3">
+          <div className="flex gap-3 items-center">
+             <CurrencySwitcher />
              <div className="px-4 py-2 rounded-xl bg-card border border-border backdrop-blur-md text-sm text-muted-foreground flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"/>
                 Live Data
@@ -286,7 +290,7 @@ export function Dashboard() {
                   </h3>
                   <p className="text-sm text-muted-foreground">Daily expenses</p>
                 </div>
-                <div className="text-xl font-bold text-foreground tracking-tight">$1,475</div>
+                <div className="text-xl font-bold text-foreground tracking-tight">{formatAmount(1475)}</div>
               </div>
               <div className="h-[200px] w-full mt-auto">
                 <ResponsiveContainer width="100%" height="100%">
@@ -355,7 +359,7 @@ export function Dashboard() {
                       {selectedMonth.name} Transactions
                     </h3>
                     <p className="text-sm text-muted-foreground">
-                      Total: ${selectedMonth.amount.toLocaleString()}
+                      Total: {formatAmount(selectedMonth.amount)}
                     </p>
                   </div>
                   <button
@@ -373,7 +377,7 @@ export function Dashboard() {
                         <p className="font-medium text-foreground">{t.category}</p>
                         <p className="text-sm text-muted-foreground">{t.date}</p>
                       </div>
-                      <p className="font-semibold text-foreground">${t.amount.toLocaleString()}</p>
+                      <p className="font-semibold text-foreground">{formatAmount(t.amount)}</p>
                     </div>
                   ))}
                   {(!selectedMonth.transactions || selectedMonth.transactions.length === 0) && (

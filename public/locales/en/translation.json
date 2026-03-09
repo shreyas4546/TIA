@@ -1,0 +1,29 @@
+{
+  "nav": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "insights": "Insights",
+    "signIn": "Sign In",
+    "myProfile": "My Profile"
+  },
+  "hero": {
+    "title": "AI-Powered Financial Intelligence",
+    "subtitle": "Take control of your wealth with intelligent insights, automated tracking, and personalized recommendations.",
+    "getStarted": "Get Started",
+    "learnMore": "Learn More"
+  },
+  "profile": {
+    "accountSettings": "Account Settings",
+    "preferences": "Preferences",
+    "linkedAccounts": "Linked Accounts",
+    "signOut": "Sign Out",
+    "theme": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System",
+    "pushNotifications": "Push Notifications",
+    "defaultCurrency": "Default Currency",
+    "linkAccount": "Link Account",
+    "noAccounts": "No accounts linked"
+  }
+}

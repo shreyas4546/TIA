@@ -6,6 +6,8 @@ import { GlowButton } from "./ui/GlowButton";
 import { useTheme } from "./ThemeProvider";
 import { NotificationsDropdown } from "./NotificationsDropdown";
 import { useAuth } from "../contexts/AuthContext";
+import { LanguageSwitcher } from "./LanguageSwitcher";
+import { useTranslation } from "react-i18next";
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -15,11 +17,12 @@ export function Navbar() {
   const location = useLocation();
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const { user, signInWithGoogle } = useAuth();
+  const { t } = useTranslation();
 
   const navLinks = [
-    { name: "Home", path: "/" },
-    { name: "Dashboard", path: "/dashboard" },
-    { name: "Insights", path: "/#insights" },
+    { name: t("nav.home"), path: "/" },
+    { name: t("nav.dashboard"), path: "/dashboard" },
+    { name: t("nav.insights"), path: "/#insights" },
   ];
 
   useEffect(() => {
@@ -123,6 +126,7 @@ export function Navbar() {
         </nav>
 
         <div className="hidden md:flex items-center gap-4">
+          <LanguageSwitcher />
           <NotificationsDropdown />
           {/* Theme Toggle */}
           <button
@@ -159,13 +163,14 @@ export function Navbar() {
               whileTap={{ scale: 0.95 }}
               onClick={signInWithGoogle}
             >
-              Sign In
+              {t("nav.signIn")}
             </GlowButton>
           )}
         </div>
 
         {/* Mobile Menu Toggle */}
         <div className="flex items-center gap-4 md:hidden">
+          <LanguageSwitcher />
           <NotificationsDropdown />
           <button
             onClick={toggleTheme}
@@ -230,12 +235,12 @@ export function Navbar() {
               {user ? (
                 <Link to="/profile" onClick={() => setIsMobileMenuOpen(false)}>
                   <GlowButton className="w-full justify-center">
-                    My Profile
+                    {t("nav.myProfile")}
                   </GlowButton>
                 </Link>
               ) : (
                 <GlowButton className="w-full justify-center" onClick={() => { setIsMobileMenuOpen(false); signInWithGoogle(); }}>
-                  Sign In
+                  {t("nav.signIn")}
                 </GlowButton>
               )}
             </div>

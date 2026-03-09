@@ -3,6 +3,7 @@ import { motion, Variants } from "motion/react";
 import { ArrowRight, Sparkles, ChevronDown, Activity, CreditCard, DollarSign, TrendingUp, PieChart, Shield, Zap, Target, BarChart2, Briefcase } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { GlowButton } from "./ui/GlowButton";
+import { useTranslation } from "react-i18next";
 
 const floatingIcons = [
   { Icon: DollarSign, size: 24, x: 15, y: 20, delay: 0 },
@@ -21,6 +22,7 @@ export function Hero() {
   const navigate = useNavigate();
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const containerRef = useRef<HTMLDivElement>(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -163,16 +165,13 @@ export function Hero() {
             <div className="absolute -inset-4 bg-background/30 backdrop-blur-md rounded-3xl -z-10 blur-xl" />
             
             <motion.h1 variants={itemVariants} className="text-5xl md:text-7xl font-display font-bold tracking-tight leading-tight relative z-10 text-foreground">
-              Master Your Wealth with <span className="text-shimmer" data-text="Autonomous AI">Autonomous AI</span>
+              {t("hero.title")}
             </motion.h1>
           </div>
           
           <motion.div variants={itemVariants} className="text-xl text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed relative z-10 space-y-2">
             <p className="bg-background/30 backdrop-blur-[2px] rounded-lg px-2 py-1 inline-block">
-              Connect your accounts to unlock real-time predictive insights.
-            </p>
-            <p className="bg-background/30 backdrop-blur-[2px] rounded-lg px-2 py-1 inline-block">
-              Let Tia optimize your spending, detect fraud, and grow your net worth.
+              {t("hero.subtitle")}
             </p>
           </motion.div>
           
@@ -181,7 +180,7 @@ export function Hero() {
               onClick={() => navigate("/dashboard#assistant")} 
               className="w-full sm:w-auto"
             >
-              Start Analysis
+              {t("hero.getStarted")}
               <motion.span
                 animate={{ x: [0, 5, 0] }}
                 transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
@@ -195,7 +194,7 @@ export function Hero() {
               onClick={() => navigate("/dashboard")}
               className="w-full sm:w-auto"
             >
-              Explore Dashboard
+              {t("hero.learnMore")}
             </GlowButton>
           </motion.div>
 

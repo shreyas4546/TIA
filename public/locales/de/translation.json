@@ -1,0 +1,36 @@
+{
+  "nav": {
+    "home": "Startseite",
+    "dashboard": "Dashboard",
+    "insights": "Einblicke",
+    "signIn": "Anmelden",
+    "myProfile": "Mein Profil"
+  },
+  "hero": {
+    "title": "KI-gestützte Finanzintelligenz",
+    "subtitle": "Übernehmen Sie die Kontrolle über Ihr Vermögen mit intelligenten Einblicken, automatisiertem Tracking und personalisierten Empfehlungen.",
+    "getStarted": "Loslegen",
+    "learnMore": "Mehr erfahren"
+  },
+  "profile": {
+    "accountSettings": "Kontoeinstellungen",
+    "preferences": "Präferenzen",
+    "linkedAccounts": "Verknüpfte Konten",
+    "signOut": "Abmelden",
+    "theme": "Thema",
+    "light": "Hell",
+    "dark": "Dunkel",
+    "system": "System",
+    "pushNotifications": "Push-Benachrichtigungen",
+    "pushNotificationsDesc": "Erhalten Sie Benachrichtigungen für ungewöhnliche Aktivitäten und Einblicke.",
+    "defaultCurrency": "Standardwährung",
+    "linkAccount": "Konto verknüpfen",
+    "noAccounts": "Keine Konten verknüpft",
+    "linkAccountsDesc": "Verknüpfen Sie Ihre Finanzinstitute, um personalisierte KI-Einblicke zu erhalten und Ihr Nettovermögen zu verfolgen.",
+    "pleaseLogIn": "Bitte melden Sie sich an, um Ihr Profil anzuzeigen",
+    "displayName": "Anzeigename",
+    "managedByGoogle": "Wird von Ihrem Google-Konto verwaltet.",
+    "emailAddress": "E-Mail-Adresse",
+    "lastSynced": "Zuletzt synchronisiert"
+  }
+}

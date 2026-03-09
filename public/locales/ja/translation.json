@@ -1,0 +1,36 @@
+{
+  "nav": {
+    "home": "ホーム",
+    "dashboard": "ダッシュボード",
+    "insights": "インサイト",
+    "signIn": "サインイン",
+    "myProfile": "マイプロフィール"
+  },
+  "hero": {
+    "title": "AIを活用した金融インテリジェンス",
+    "subtitle": "インテリジェントな洞察、自動追跡、パーソナライズされた推奨事項で資産を管理します。",
+    "getStarted": "始める",
+    "learnMore": "詳細を見る"
+  },
+  "profile": {
+    "accountSettings": "アカウント設定",
+    "preferences": "設定",
+    "linkedAccounts": "リンクされたアカウント",
+    "signOut": "サインアウト",
+    "theme": "テーマ",
+    "light": "ライト",
+    "dark": "ダーク",
+    "system": "システム",
+    "pushNotifications": "プッシュ通知",
+    "pushNotificationsDesc": "異常なアクティビティや洞察に関するアラートを受け取ります。",
+    "defaultCurrency": "デフォルト通貨",
+    "linkAccount": "アカウントをリンク",
+    "noAccounts": "リンクされたアカウントはありません",
+    "linkAccountsDesc": "金融機関をリンクして、パーソナライズされたAIの洞察を取得し、純資産を追跡します。",
+    "pleaseLogIn": "プロフィールを表示するにはログインしてください",
+    "displayName": "表示名",
+    "managedByGoogle": "Googleアカウントによって管理されています。",
+    "emailAddress": "メールアドレス",
+    "lastSynced": "最終同期"
+  }
+}

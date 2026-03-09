@@ -1,0 +1,29 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "dashboard": "Tableau de bord",
+    "insights": "Aperçus",
+    "signIn": "Se connecter",
+    "myProfile": "Mon Profil"
+  },
+  "hero": {
+    "title": "Intelligence Financière Propulsée par l'IA",
+    "subtitle": "Prenez le contrôle de votre patrimoine avec des aperçus intelligents, un suivi automatisé et des recommandations personnalisées.",
+    "getStarted": "Commencer",
+    "learnMore": "En savoir plus"
+  },
+  "profile": {
+    "accountSettings": "Paramètres du compte",
+    "preferences": "Préférences",
+    "linkedAccounts": "Comptes liés",
+    "signOut": "Se déconnecter",
+    "theme": "Thème",
+    "light": "Clair",
+    "dark": "Sombre",
+    "system": "Système",
+    "pushNotifications": "Notifications Push",
+    "defaultCurrency": "Devise par défaut",
+    "linkAccount": "Lier un compte",
+    "noAccounts": "Aucun compte lié"
+  }
+}

@@ -4,12 +4,14 @@ import { useAuth } from '../contexts/AuthContext';
 import { doc, onSnapshot, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { db, handleFirestoreError, OperationType } from '../lib/firebase';
 import { Settings, User as UserIcon, Bell, CreditCard, LogOut, Moon, Sun, Monitor, Plus, Trash2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export function ProfilePage() {
   const { user, logout } = useAuth();
   const [profileData, setProfileData] = useState<any>(null);
   const [activeTab, setActiveTab] = useState('settings');
   const [isUpdating, setIsUpdating] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (!user) return;
@@ -33,7 +35,7 @@ export function ProfilePage() {
     return (
       <div className="min-h-screen pt-24 pb-12 px-4 flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold mb-4">Please log in to view your profile</h2>
+          <h2 className="text-2xl font-bold mb-4">{t("profile.pleaseLogIn")}</h2>
         </div>
       </div>
     );
@@ -114,15 +116,15 @@ export function ProfilePage() {
               className="w-full flex items-center justify-center gap-2 py-2 px-4 rounded-lg text-red-500 hover:bg-red-500/10 transition-colors"
             >
               <LogOut className="w-4 h-4" />
-              Sign Out
+              {t("profile.signOut")}
             </button>
           </div>
 
           <nav className="flex flex-col gap-2">
             {[
-              { id: 'settings', label: 'Account Settings', icon: Settings },
-              { id: 'preferences', label: 'Preferences', icon: Bell },
-              { id: 'institutions', label: 'Linked Accounts', icon: CreditCard },
+              { id: 'settings', label: t("profile.accountSettings"), icon: Settings },
+              { id: 'preferences', label: t("profile.preferences"), icon: Bell },
+              { id: 'institutions', label: t("profile.linkedAccounts"), icon: CreditCard },
             ].map(tab => (
               <button
                 key={tab.id}
@@ -151,20 +153,20 @@ export function ProfilePage() {
           >
             {activeTab === 'settings' && (
               <div>
-                <h2 className="text-2xl font-bold mb-6">Account Settings</h2>
+                <h2 className="text-2xl font-bold mb-6">{t("profile.accountSettings")}</h2>
                 <div className="space-y-6">
                   <div>
-                    <label className="block text-sm font-medium text-muted-foreground mb-2">Display Name</label>
+                    <label className="block text-sm font-medium text-muted-foreground mb-2">{t("profile.displayName")}</label>
                     <input 
                       type="text" 
                       value={profileData?.displayName || ''} 
                       disabled
                       className="w-full bg-background border border-border rounded-lg px-4 py-2 opacity-70 cursor-not-allowed"
                     />
-                    <p className="text-xs text-muted-foreground mt-2">Managed by your Google account.</p>
+                    <p className="text-xs text-muted-foreground mt-2">{t("profile.managedByGoogle")}</p>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-muted-foreground mb-2">Email Address</label>
+                    <label className="block text-sm font-medium text-muted-foreground mb-2">{t("profile.emailAddress")}</label>
                     <input 
                       type="email" 
                       value={profileData?.email || ''} 
@@ -178,17 +180,17 @@ export function ProfilePage() {
 
             {activeTab === 'preferences' && (
               <div>
-                <h2 className="text-2xl font-bold mb-6">Preferences</h2>
+                <h2 className="text-2xl font-bold mb-6">{t("profile.preferences")}</h2>
                 
                 <div className="space-y-8">
                   {/* Theme */}
                   <div>
-                    <h3 className="text-lg font-medium mb-4">Theme</h3>
+                    <h3 className="text-lg font-medium mb-4">{t("profile.theme")}</h3>
                     <div className="flex gap-4">
                       {[
-                        { id: 'light', icon: Sun, label: 'Light' },
-                        { id: 'dark', icon: Moon, label: 'Dark' },
-                        { id: 'system', icon: Monitor, label: 'System' }
+                        { id: 'light', icon: Sun, label: t("profile.light") },
+                        { id: 'dark', icon: Moon, label: t("profile.dark") },
+                        { id: 'system', icon: Monitor, label: t("profile.system") }
                       ].map(theme => (
                         <button
                           key={theme.id}
@@ -212,8 +214,8 @@ export function ProfilePage() {
                   {/* Notifications */}
                   <div className="flex items-center justify-between">
                     <div>
-                      <h3 className="text-lg font-medium">Push Notifications</h3>
-                      <p className="text-sm text-muted-foreground">Receive alerts for unusual activity and insights.</p>
+                      <h3 className="text-lg font-medium">{t("profile.pushNotifications")}</h3>
+                      <p className="text-sm text-muted-foreground">{t("profile.pushNotificationsDesc")}</p>
                     </div>
                     <button
                       disabled={isUpdating}
@@ -232,7 +234,7 @@ export function ProfilePage() {
 
                   {/* Currency */}
                   <div>
-                    <h3 className="text-lg font-medium mb-4">Default Currency</h3>
+                    <h3 className="text-lg font-medium mb-4">{t("profile.defaultCurrency")}</h3>
                     <select
                       disabled={isUpdating}
                       value={profileData?.preferences?.currency || 'USD'}
@@ -252,23 +254,23 @@ export function ProfilePage() {
             {activeTab === 'institutions' && (
               <div>
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-2xl font-bold">Linked Accounts</h2>
+                  <h2 className="text-2xl font-bold">{t("profile.linkedAccounts")}</h2>
                   <button 
                     onClick={handleAddMockInstitution}
                     disabled={isUpdating}
                     className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors text-sm font-medium"
                   >
                     <Plus className="w-4 h-4" />
-                    Link Account
+                    {t("profile.linkAccount")}
                   </button>
                 </div>
 
                 {(!profileData?.linkedInstitutions || profileData.linkedInstitutions.length === 0) ? (
                   <div className="text-center py-12 border-2 border-dashed border-border rounded-xl">
                     <CreditCard className="w-12 h-12 text-muted-foreground mx-auto mb-4 opacity-50" />
-                    <h3 className="text-lg font-medium mb-2">No accounts linked</h3>
+                    <h3 className="text-lg font-medium mb-2">{t("profile.noAccounts")}</h3>
                     <p className="text-muted-foreground text-sm max-w-sm mx-auto">
-                      Link your financial institutions to get personalized AI insights and track your net worth.
+                      {t("profile.linkAccountsDesc")}
                     </p>
                   </div>
                 ) : (
@@ -281,7 +283,7 @@ export function ProfilePage() {
                           </div>
                           <div>
                             <h4 className="font-medium">{inst.name}</h4>
-                            <p className="text-xs text-muted-foreground capitalize">{inst.type} • Last synced: {new Date(inst.lastSynced).toLocaleDateString()}</p>
+                            <p className="text-xs text-muted-foreground capitalize">{inst.type} • {t("profile.lastSynced")}: {new Date(inst.lastSynced).toLocaleDateString()}</p>
                           </div>
                         </div>
                         <div className="flex items-center gap-4">
