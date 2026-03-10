@@ -16,7 +16,7 @@ export function Navbar() {
   const { theme, setTheme } = useTheme();
   const location = useLocation();
   const mobileMenuRef = useRef<HTMLDivElement>(null);
-  const { user, signInWithGoogle } = useAuth();
+  const { user, openAuthModal } = useAuth();
   const { t } = useTranslation();
 
   const navLinks = [
@@ -79,11 +79,10 @@ export function Navbar() {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.5 }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        isScrolled
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${isScrolled
           ? "bg-background/60 backdrop-blur-2xl border-b border-border py-4 shadow-lg"
           : "bg-transparent py-6"
-      }`}
+        }`}
     >
       <div className="container mx-auto px-6 flex items-center justify-between">
         {/* Logo */}
@@ -102,27 +101,28 @@ export function Navbar() {
           {navLinks.map((link, index) => {
             const isActive = location.pathname === link.path || (link.path.startsWith('/#') && location.hash === link.path.substring(1));
             return (
-            <Link
-              key={link.name}
-              to={link.path}
-              aria-current={isActive ? "page" : undefined}
-              className={`relative px-2 py-1 text-sm font-medium transition-colors duration-300 ${isActive ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
-              onMouseEnter={() => setHoveredIndex(index)}
-              onMouseLeave={() => setHoveredIndex(null)}
-            >
-              {link.name}
-              {hoveredIndex === index && (
-                <motion.div
-                  layoutId="navbar-underline"
-                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-accent-cyan to-accent-purple shadow-[0_0_8px_var(--color-accent-cyan)]"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                />
-              )}
-            </Link>
-          )})}
+              <Link
+                key={link.name}
+                to={link.path}
+                aria-current={isActive ? "page" : undefined}
+                className={`relative px-2 py-1 text-sm font-medium transition-colors duration-300 ${isActive ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+                onMouseEnter={() => setHoveredIndex(index)}
+                onMouseLeave={() => setHoveredIndex(null)}
+              >
+                {link.name}
+                {hoveredIndex === index && (
+                  <motion.div
+                    layoutId="navbar-underline"
+                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-accent-cyan to-accent-purple shadow-[0_0_8px_var(--color-accent-cyan)]"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                  />
+                )}
+              </Link>
+            )
+          })}
         </nav>
 
         <div className="hidden md:flex items-center gap-4">
@@ -161,7 +161,7 @@ export function Navbar() {
               className="shadow-[0_0_20px_rgba(139,92,246,0.3)] hover:shadow-[0_0_30px_rgba(139,92,246,0.6)] transition-shadow duration-500"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={signInWithGoogle}
+              onClick={openAuthModal}
             >
               {t("nav.signIn")}
             </GlowButton>
@@ -177,9 +177,9 @@ export function Navbar() {
             className="p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-300"
             aria-label="Toggle theme"
           >
-             {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+            {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
           </button>
-          
+
           <button
             className="text-muted-foreground hover:text-foreground focus:outline-none focus:ring-2 focus:ring-accent-purple rounded-lg p-1"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -219,16 +219,17 @@ export function Navbar() {
               {navLinks.map((link) => {
                 const isActive = location.pathname === link.path || (link.path.startsWith('/#') && location.hash === link.path.substring(1));
                 return (
-                <Link
-                  key={link.name}
-                  to={link.path}
-                  aria-current={isActive ? "page" : undefined}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className={`text-lg font-medium hover:pl-2 transition-all duration-300 border-b border-border pb-2 ${isActive ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
-                >
-                  {link.name}
-                </Link>
-              )})}
+                  <Link
+                    key={link.name}
+                    to={link.path}
+                    aria-current={isActive ? "page" : undefined}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={`text-lg font-medium hover:pl-2 transition-all duration-300 border-b border-border pb-2 ${isActive ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+                  >
+                    {link.name}
+                  </Link>
+                )
+              })}
             </nav>
 
             <div className="mt-auto">
@@ -239,7 +240,7 @@ export function Navbar() {
                   </GlowButton>
                 </Link>
               ) : (
-                <GlowButton className="w-full justify-center" onClick={() => { setIsMobileMenuOpen(false); signInWithGoogle(); }}>
+                <GlowButton className="w-full justify-center" onClick={() => { setIsMobileMenuOpen(false); openAuthModal(); }}>
                   {t("nav.signIn")}
                 </GlowButton>
               )}

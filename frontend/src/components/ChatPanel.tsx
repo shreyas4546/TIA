@@ -1,13 +1,11 @@
 import { useState, useRef, useEffect, type FormEvent, type ChangeEvent } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Send, Bot, User, Sparkles, Zap, Brain, Globe, Video, X, Mic, Landmark, ThumbsUp, ThumbsDown } from "lucide-react";
-import { GoogleGenAI, ThinkingLevel, type GenerateContentResponse } from "@google/genai";
 import Markdown from "react-markdown";
 import { GlassCard } from "./ui/GlassCard";
 import { GlowButton } from "./ui/GlowButton";
 import { BankLinkModal } from "./BankLinkModal";
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 type Message = {
   id: string;
@@ -35,7 +33,7 @@ export function ChatPanel() {
   const [selectedVideo, setSelectedVideo] = useState<File | null>(null);
   const [isRecording, setIsRecording] = useState(false);
   const [isBankModalOpen, setIsBankModalOpen] = useState(false);
-  
+
   // Use a ref for the container to scroll IT, not the window
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -46,7 +44,7 @@ export function ChatPanel() {
     if (scrollContainerRef.current) {
       const { scrollHeight, clientHeight } = scrollContainerRef.current;
       const maxScrollTop = scrollHeight - clientHeight;
-      
+
       scrollContainerRef.current.scrollTo({
         top: maxScrollTop > 0 ? maxScrollTop : 0,
         behavior: "smooth",
@@ -130,28 +128,21 @@ export function ChatPanel() {
     setIsTyping(true);
     try {
       const base64Audio = await fileToBase64(audioBlob);
-      
-      const response = await ai.models.generateContent({
-        model: "gemini-3-flash-preview",
-        contents: [
-          {
-            role: "user",
-            parts: [
-              {
-                inlineData: {
-                  mimeType: audioBlob.type || "audio/webm",
-                  data: base64Audio
-                }
-              },
-              { text: "Transcribe this audio exactly as spoken. Return only the text." }
-            ]
-          }
-        ]
+
+      const response = await fetch("http://localhost:5000/api/transcribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          audioBase64: base64Audio,
+          audioMimeType: audioBlob.type || "audio/webm"
+        })
       });
 
-      const text = response.text;
-      if (text) {
-        setInput((prev) => (prev ? prev + " " + text : text));
+      if (!response.ok) throw new Error("Transcription failed on backend");
+      const data = await response.json();
+
+      if (data.text) {
+        setInput((prev) => (prev ? prev + " " + data.text : data.text));
       }
     } catch (error) {
       console.error("Transcription error:", error);
@@ -173,7 +164,7 @@ export function ChatPanel() {
   };
 
   const handleFeedback = (id: string, feedback: 'up' | 'down') => {
-    setMessages(prev => prev.map(msg => 
+    setMessages(prev => prev.map(msg =>
       msg.id === id ? { ...msg, feedback: msg.feedback === feedback ? null : feedback } : msg
     ));
   };
@@ -200,53 +191,21 @@ export function ChatPanel() {
     setIsTyping(true);
 
     try {
-      // Prepare history - simplified for this demo to just text context
-      // In a real app, you'd want to persist multimodal history carefully
-      const history = messages.slice(1).map(m => ({
-        role: m.sender === "user" ? "user" : "model",
-        parts: [{ text: m.text }]
-      }));
-      
-      const parts: any[] = [];
-      
-      if (currentVideo) {
-        const base64Video = await fileToBase64(currentVideo);
-        parts.push({
-          inlineData: {
-            mimeType: currentVideo.type,
-            data: base64Video
-          }
-        });
-      }
-      
-      if (userText) {
-        parts.push({ text: userText });
-      }
-
-      history.push({ role: "user", parts });
-
-      let modelName = "gemini-3.1-flash-lite-preview";
-      let config: any = {
-        systemInstruction: "You are Tia, an AI financial assistant. Help the user track spending, analyze financial behavior, and forecast budgets. Be concise and professional.",
+      const requestBody = {
+        message: userText,
+        videoBase64: currentVideo ? await fileToBase64(currentVideo) : undefined,
+        videoMimeType: currentVideo?.type,
+        chatMode,
+        history: messages.slice(1).map(m => ({ text: m.text, sender: m.sender }))
       };
 
-      if (chatMode === "think") {
-        modelName = "gemini-3.1-pro-preview";
-        config.thinkingConfig = { thinkingLevel: ThinkingLevel.HIGH };
-      } else if (chatMode === "search") {
-        modelName = "gemini-3-flash-preview";
-        config.tools = [{ googleSearch: {} }];
-      } else if (currentVideo) {
-        // MUST use Pro for video understanding
-        modelName = "gemini-3.1-pro-preview";
-        config.thinkingConfig = { thinkingLevel: ThinkingLevel.HIGH };
-      }
-
-      const responseStream = await ai.models.generateContentStream({
-        model: modelName,
-        contents: history,
-        config,
+      const response = await fetch("http://localhost:5000/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(requestBody)
       });
+
+      if (!response.ok) throw new Error("Backend chat failed");
 
       const aiMsgId = (Date.now() + 1).toString();
       setMessages((prev) => [
@@ -254,16 +213,34 @@ export function ChatPanel() {
         { id: aiMsgId, text: "", sender: "ai", timestamp: new Date() },
       ]);
 
+      if (!response.body) throw new Error("No response body");
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder("utf-8");
+
       let fullText = "";
-      for await (const chunk of responseStream) {
-        const c = chunk as GenerateContentResponse;
-        if (c.text) {
-          fullText += c.text;
-          setMessages((prev) =>
-            prev.map((msg) =>
-              msg.id === aiMsgId ? { ...msg, text: fullText } : msg
-            )
-          );
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        const chunk = decoder.decode(value, { stream: true });
+        const lines = chunk.split('\\n');
+
+        for (const line of lines) {
+          if (line.startsWith('data: ') && line !== 'data: [DONE]') {
+            try {
+              const data = JSON.parse(line.slice(6));
+              if (data.text) {
+                fullText += data.text;
+                setMessages((prev) =>
+                  prev.map((msg) =>
+                    msg.id === aiMsgId ? { ...msg, text: fullText } : msg
+                  )
+                );
+              }
+            } catch (e) {
+              // Ignore partial JSON chunks
+            }
+          }
         }
       }
     } catch (error) {
@@ -315,18 +292,18 @@ export function ChatPanel() {
                   <p className="text-xs text-green-400 font-medium">Online & Ready</p>
                 </div>
               </div>
-              
+
               <div className="flex items-center gap-1 bg-background/20 p-1 rounded-xl border border-border">
-                <button onClick={() => setIsBankModalOpen(true)} className="px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all duration-200 text-muted-foreground hover:bg-card/50 hover:text-foreground hidden sm:flex"><Landmark className="w-3 h-3" aria-hidden="true"/> Link Bank</button>
+                <button onClick={() => setIsBankModalOpen(true)} className="px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all duration-200 text-muted-foreground hover:bg-card/50 hover:text-foreground hidden sm:flex"><Landmark className="w-3 h-3" aria-hidden="true" /> Link Bank</button>
                 <div className="w-px h-4 bg-border mx-1 hidden sm:block"></div>
-                <button onClick={() => setChatMode('fast')} className={`px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all duration-200 ${chatMode === 'fast' ? 'bg-accent-blue/20 text-accent-blue border border-accent-blue/30 shadow-[0_0_10px_rgba(59,130,246,0.2)]' : 'text-muted-foreground hover:bg-card/50 hover:text-foreground'}`}><Zap className="w-3 h-3" aria-hidden="true"/> Fast</button>
-                <button onClick={() => setChatMode('think')} className={`px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all duration-200 ${chatMode === 'think' ? 'bg-accent-purple/20 text-accent-purple border border-accent-purple/30 shadow-[0_0_10px_rgba(139,92,246,0.2)]' : 'text-muted-foreground hover:bg-card/50 hover:text-foreground'}`}><Brain className="w-3 h-3" aria-hidden="true"/> Deep Think</button>
-                <button onClick={() => setChatMode('search')} className={`px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all duration-200 ${chatMode === 'search' ? 'bg-accent-cyan/20 text-accent-cyan border border-accent-cyan/30 shadow-[0_0_10px_rgba(6,182,212,0.2)]' : 'text-muted-foreground hover:bg-card/50 hover:text-foreground'}`}><Globe className="w-3 h-3" aria-hidden="true"/> Search</button>
+                <button onClick={() => setChatMode('fast')} className={`px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all duration-200 ${chatMode === 'fast' ? 'bg-accent-blue/20 text-accent-blue border border-accent-blue/30 shadow-[0_0_10px_rgba(59,130,246,0.2)]' : 'text-muted-foreground hover:bg-card/50 hover:text-foreground'}`}><Zap className="w-3 h-3" aria-hidden="true" /> Fast</button>
+                <button onClick={() => setChatMode('think')} className={`px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all duration-200 ${chatMode === 'think' ? 'bg-accent-purple/20 text-accent-purple border border-accent-purple/30 shadow-[0_0_10px_rgba(139,92,246,0.2)]' : 'text-muted-foreground hover:bg-card/50 hover:text-foreground'}`}><Brain className="w-3 h-3" aria-hidden="true" /> Deep Think</button>
+                <button onClick={() => setChatMode('search')} className={`px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all duration-200 ${chatMode === 'search' ? 'bg-accent-cyan/20 text-accent-cyan border border-accent-cyan/30 shadow-[0_0_10px_rgba(6,182,212,0.2)]' : 'text-muted-foreground hover:bg-card/50 hover:text-foreground'}`}><Globe className="w-3 h-3" aria-hidden="true" /> Search</button>
               </div>
             </div>
 
             {/* Chat Messages */}
-            <div 
+            <div
               ref={scrollContainerRef}
               className="flex-1 overflow-y-auto p-6 space-y-6 scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent"
             >
@@ -342,7 +319,7 @@ export function ChatPanel() {
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 shadow-md ${msg.sender === "user" ? "bg-card border border-border" : "bg-gradient-to-br from-accent-purple to-accent-blue"}`}>
                       {msg.sender === "user" ? <User className="w-4 h-4 text-muted-foreground" aria-hidden="true" /> : <Bot className="w-4 h-4 text-white" aria-hidden="true" />}
                     </div>
-                    
+
                     <div className={`max-w-[80%] rounded-2xl p-4 shadow-sm ${msg.sender === "user" ? "bg-accent-purple/20 border border-accent-purple/20 text-foreground rounded-tr-sm backdrop-blur-sm" : "bg-card border border-border text-foreground rounded-tl-sm backdrop-blur-sm"}`}>
                       {msg.hasVideo && (
                         <div className="mb-2 flex items-center gap-2 text-xs bg-background/30 p-2 rounded-lg border border-border">
@@ -359,14 +336,14 @@ export function ChatPanel() {
                         </span>
                         {msg.sender === "ai" && (
                           <div className="flex items-center gap-1">
-                            <button 
+                            <button
                               onClick={() => handleFeedback(msg.id, 'up')}
                               className={`p-1.5 rounded-md hover:bg-surface-hover transition-colors ${msg.feedback === 'up' ? 'text-green-500 bg-green-500/10' : 'text-muted-foreground'}`}
                               title="Good response"
                             >
                               <ThumbsUp className="w-3.5 h-3.5" aria-hidden="true" />
                             </button>
-                            <button 
+                            <button
                               onClick={() => handleFeedback(msg.id, 'down')}
                               className={`p-1.5 rounded-md hover:bg-surface-hover transition-colors ${msg.feedback === 'down' ? 'text-red-500 bg-red-500/10' : 'text-muted-foreground'}`}
                               title="Bad response"
@@ -380,7 +357,7 @@ export function ChatPanel() {
                   </motion.div>
                 ))}
               </AnimatePresence>
-              
+
               <AnimatePresence>
                 {isTyping && (
                   <motion.div
@@ -412,11 +389,11 @@ export function ChatPanel() {
                 </div>
               )}
               <form onSubmit={handleSend} className="relative flex items-center gap-3">
-                <input 
-                  type="file" 
-                  accept="video/*" 
-                  ref={fileInputRef} 
-                  className="hidden" 
+                <input
+                  type="file"
+                  accept="video/*"
+                  ref={fileInputRef}
+                  className="hidden"
                   onChange={handleFileSelect}
                 />
                 <button
@@ -427,7 +404,7 @@ export function ChatPanel() {
                 >
                   <Video className="w-5 h-5" aria-hidden="true" />
                 </button>
-                
+
                 <button
                   type="button"
                   onClick={isRecording ? stopRecording : startRecording}
@@ -445,7 +422,7 @@ export function ChatPanel() {
                   className="w-full bg-background/50 border border-border rounded-full py-3.5 pl-6 pr-14 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-accent-purple/50 focus:bg-background/80 transition-all duration-200"
                   disabled={isTyping || isRecording}
                 />
-                
+
                 <div className="absolute right-2">
                   <GlowButton
                     type="submit"

@@ -3,6 +3,7 @@ import { Dashboard } from "../components/Dashboard";
 import { WowFeatures } from "../components/WowFeatures";
 import { ChatPanel } from "../components/ChatPanel";
 import { Footer } from "../components/Footer";
+import { OnboardingModal } from "../components/OnboardingModal";
 
 const pageVariants: Variants = {
   initial: { opacity: 0, y: 20 },
@@ -18,8 +19,9 @@ export function DashboardPage() {
       animate="animate"
       exit="exit"
     >
-      <main className="pt-20 min-h-screen flex flex-col">
-        <div className="flex-1">
+      <main className="pt-20 min-h-screen flex flex-col relative z-0">
+        <OnboardingModal />
+        <div className="flex-1 relative z-10">
           <Dashboard />
           <WowFeatures />
           <ChatPanel />

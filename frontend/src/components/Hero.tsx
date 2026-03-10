@@ -4,6 +4,7 @@ import { ArrowRight, Sparkles, ChevronDown, Activity, CreditCard, DollarSign, Tr
 import { useNavigate } from "react-router-dom";
 import { GlowButton } from "./ui/GlowButton";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "../contexts/AuthContext";
 
 const floatingIcons = [
   { Icon: DollarSign, size: 24, x: 15, y: 20, delay: 0 },
@@ -23,6 +24,7 @@ export function Hero() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const containerRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation();
+  const { user, openAuthModal } = useAuth();
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -59,8 +61,8 @@ export function Hero() {
 
   const itemVariants: Variants = {
     hidden: { opacity: 0, y: 30 },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       y: 0,
       transition: { type: "spring", stiffness: 100, damping: 20, mass: 0.5 }
     },
@@ -72,7 +74,7 @@ export function Hero() {
   };
 
   return (
-    <section 
+    <section
       ref={containerRef}
       className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 bg-background"
     >
@@ -82,10 +84,10 @@ export function Hero() {
         <div className="absolute top-[20%] -right-[10%] w-[40%] h-[60%] rounded-full bg-accent-blue/20 blur-[120px] mix-blend-screen animate-pulse" style={{ animationDuration: '10s', animationDelay: '2s' }} />
         <div className="absolute -bottom-[20%] left-[20%] w-[60%] h-[50%] rounded-full bg-accent-cyan/10 blur-[120px] mix-blend-screen animate-pulse" style={{ animationDuration: '12s', animationDelay: '4s' }} />
       </div>
-      
+
       {/* Subtle Grid Background */}
-      <div 
-        className="absolute inset-0 z-0 pointer-events-none opacity-10" 
+      <div
+        className="absolute inset-0 z-0 pointer-events-none opacity-10"
         style={{
           backgroundImage: 'linear-gradient(to right, currentColor 1px, transparent 1px), linear-gradient(to bottom, currentColor 1px, transparent 1px)',
           backgroundSize: '40px 40px',
@@ -100,7 +102,7 @@ export function Hero() {
         {/* Fallback for no-js */}
         <noscript>
           {floatingIcons.map((item, i) => (
-            <div 
+            <div
               key={`fallback-${i}`}
               className="absolute text-muted-foreground/20"
               style={{ left: `${item.x}%`, top: `${item.y}%` }}
@@ -109,17 +111,17 @@ export function Hero() {
             </div>
           ))}
         </noscript>
-        
+
         {floatingIcons.map((item, i) => {
           const parallaxX = mousePosition.x * (i % 2 === 0 ? 1 : -1) * (item.size / 20);
           const parallaxY = mousePosition.y * (i % 2 === 0 ? 1 : -1) * (item.size / 20);
-          
+
           return (
             <motion.div
               key={i}
               className="absolute text-muted-foreground/20"
-              style={{ 
-                left: `${item.x}%`, 
+              style={{
+                left: `${item.x}%`,
                 top: `${item.y}%`,
               }}
               animate={{
@@ -150,10 +152,10 @@ export function Hero() {
             <Sparkles className="w-4 h-4 text-accent-purple" />
             <span className="text-sm font-medium text-muted-foreground">Introducing AI Financial Intelligence</span>
           </motion.div>
-          
+
           <div className="relative inline-block mb-6">
             {/* Premium Gradient Glow */}
-            <div 
+            <div
               className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150%] h-[150%] -z-20 opacity-60 pointer-events-none blur-[60px] mix-blend-screen"
               style={{
                 background: "radial-gradient(circle at center, rgba(139, 92, 246, 0.6) 0%, rgba(59, 130, 246, 0.3) 40%, transparent 70%)",
@@ -163,42 +165,59 @@ export function Hero() {
 
             {/* Semi-opaque glass backdrop for text contrast */}
             <div className="absolute -inset-4 bg-background/30 backdrop-blur-md rounded-3xl -z-10 blur-xl" />
-            
+
             <motion.h1 variants={itemVariants} className="text-5xl md:text-7xl font-display font-bold tracking-tight leading-tight relative z-10 text-foreground">
               {t("hero.title")}
             </motion.h1>
           </div>
-          
+
           <motion.div variants={itemVariants} className="text-xl text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed relative z-10 space-y-2">
             <p className="bg-background/30 backdrop-blur-[2px] rounded-lg px-2 py-1 inline-block">
               {t("hero.subtitle")}
             </p>
           </motion.div>
-          
+
           <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center justify-center gap-4 relative z-10 mb-16">
-            <GlowButton 
-              onClick={() => navigate("/dashboard#assistant")} 
-              className="w-full sm:w-auto"
-            >
-              {t("hero.getStarted")}
-              <motion.span
-                animate={{ x: [0, 5, 0] }}
-                transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+            {user ? (
+              <GlowButton
+                onClick={() => navigate("/dashboard")}
+                className="w-full sm:w-auto"
               >
-                <ArrowRight className="w-4 h-4" />
-              </motion.span>
-            </GlowButton>
-            
-            <GlowButton 
+                Launch Dashboard
+                <motion.span
+                  animate={{ x: [0, 5, 0] }}
+                  transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                >
+                  <ArrowRight className="w-4 h-4" />
+                </motion.span>
+              </GlowButton>
+            ) : (
+              <GlowButton
+                onClick={() => openAuthModal()}
+                className="w-full sm:w-auto"
+              >
+                Sign In to Launch
+                <motion.span
+                  animate={{ x: [0, 5, 0] }}
+                  transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                >
+                  <ArrowRight className="w-4 h-4" />
+                </motion.span>
+              </GlowButton>
+            )}
+
+            <GlowButton
               variant="secondary"
-              onClick={() => navigate("/dashboard")}
+              onClick={() => {
+                document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
+              }}
               className="w-full sm:w-auto"
             >
               {t("hero.learnMore")}
             </GlowButton>
           </motion.div>
 
-          <motion.div 
+          <motion.div
             variants={itemVariants}
             className="flex flex-col items-center justify-center gap-2 text-muted-foreground/60 hover:text-muted-foreground transition-colors cursor-pointer"
             onClick={() => {

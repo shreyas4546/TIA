@@ -2,12 +2,30 @@ import { motion } from "motion/react";
 import { Target, Plus, Calendar, ChevronRight } from "lucide-react";
 import { GlassCard } from "./ui/GlassCard";
 import { GlowButton } from "./ui/GlowButton";
-import { goalsData } from "../mock/data";
+import { goalsData as initialGoalsData } from "../mock/data";
 import { fadeInScaleVariants } from "../utils/animations";
 import { useCurrency } from "../contexts/CurrencyContext";
+import { useAuth } from "../contexts/AuthContext";
 
 export function FinancialGoals() {
   const { formatAmount } = useCurrency();
+  const { userData } = useAuth();
+
+  // Inject the user's explicit onboarding goal at the top
+  const goalsData = userData && userData.onboardingComplete
+    ? [
+      {
+        id: "user-goal",
+        name: userData.financialGoal,
+        target: userData.monthlySavingsTarget,
+        current: 0, // In a real app we'd calculate this from transactions
+        deadline: new Date(new Date().setMonth(new Date().getMonth() + 1)).toISOString(),
+        color: "#8B5CF6"
+      },
+      ...initialGoalsData.slice(1) // Replace the first mock goal with user goal
+    ]
+    : initialGoalsData;
+
   return (
     <motion.div
       variants={fadeInScaleVariants}
@@ -61,7 +79,7 @@ export function FinancialGoals() {
                     whileInView={{ scaleX: progress / 100 }}
                     transition={{ duration: 1.5, ease: "easeOut" }}
                     className="absolute inset-y-0 left-0 right-0 rounded-full origin-left"
-                    style={{ 
+                    style={{
                       backgroundColor: goal.color,
                       boxShadow: `0 0 10px ${goal.color}40`
                     }}

@@ -38,7 +38,7 @@ export function Dashboard() {
   const [selectedMonth, setSelectedMonth] = useState<any>(null);
   const [isHoloAnimated, setIsHoloAnimated] = useState(true);
   const { currency, formatAmount } = useCurrency();
-  const { user } = useAuth();
+  const { user, userData } = useAuth();
   const { t } = useTranslation();
 
   return (
@@ -53,19 +53,22 @@ export function Dashboard() {
         <div className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div>
             <h2 className="text-3xl md:text-4xl font-display font-bold mb-2 text-foreground">
-              Financial <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent-purple to-accent-cyan">Overview</span>
+              {(userData?.nickname || userData?.displayName) ? "Welcome back, " : "Financial "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent-purple to-accent-cyan">
+                {userData?.nickname ? userData.nickname : userData?.displayName ? userData.displayName.split(" ")[0] : "Overview"}
+              </span>
             </h2>
             <p className="text-muted-foreground text-lg">
               Real-time insights and AI-powered predictions.
             </p>
           </div>
-          
+
           <div className="flex gap-3 items-center">
-             <CurrencySwitcher />
-             <div className="px-4 py-2 rounded-xl bg-card border border-border backdrop-blur-md text-sm text-muted-foreground flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"/>
-                Live Data
-             </div>
+            <CurrencySwitcher />
+            <div className="px-4 py-2 rounded-xl bg-card border border-border backdrop-blur-md text-sm text-muted-foreground flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+              Live Data
+            </div>
           </div>
         </div>
 
@@ -87,7 +90,7 @@ export function Dashboard() {
                   </h3>
                   <p className="text-sm text-muted-foreground">Live financial state</p>
                 </div>
-                <button 
+                <button
                   onClick={() => setIsHoloAnimated(!isHoloAnimated)}
                   className="text-xs px-2 py-1 rounded bg-surface-hover text-muted-foreground hover:text-foreground transition-colors border border-border"
                 >
@@ -128,8 +131,8 @@ export function Dashboard() {
               </div>
               <div className="h-[300px] w-full mt-auto">
                 <ResponsiveContainer width="100%" height="100%">
-                  <LineChart 
-                    data={spendingData} 
+                  <LineChart
+                    data={spendingData}
                     margin={{ top: 5, right: 20, bottom: 5, left: 0 }}
                     onClick={(state: any) => {
                       if (state && state.activePayload && state.activePayload.length > 0) {
@@ -140,8 +143,8 @@ export function Dashboard() {
                   >
                     <defs>
                       <linearGradient id="colorAmount" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#8B5CF6" stopOpacity={0.3}/>
-                        <stop offset="95%" stopColor="#8B5CF6" stopOpacity={0}/>
+                        <stop offset="5%" stopColor="#8B5CF6" stopOpacity={0.3} />
+                        <stop offset="95%" stopColor="#8B5CF6" stopOpacity={0} />
                       </linearGradient>
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" vertical={false} />
@@ -153,15 +156,15 @@ export function Dashboard() {
                       formatter={(value: any) => [formatAmount(value), "Amount"]}
                       cursor={{ stroke: "var(--color-border)", strokeWidth: 2 }}
                     />
-                    <Line 
-                      type="monotone" 
-                      dataKey="amount" 
-                      stroke="#8B5CF6" 
-                      strokeWidth={3} 
-                      dot={{ 
-                        r: 4, 
-                        fill: "var(--color-background)", 
-                        stroke: "#8B5CF6", 
+                    <Line
+                      type="monotone"
+                      dataKey="amount"
+                      stroke="#8B5CF6"
+                      strokeWidth={3}
+                      dot={{
+                        r: 4,
+                        fill: "var(--color-background)",
+                        stroke: "#8B5CF6",
                         strokeWidth: 2,
                         cursor: "pointer",
                         onClick: (e: any, payload: any) => {
@@ -169,11 +172,11 @@ export function Dashboard() {
                             setSelectedMonth(payload.payload);
                           }
                         }
-                      }} 
-                      activeDot={{ 
-                        r: 8, 
-                        fill: "#8B5CF6", 
-                        stroke: "var(--color-background)", 
+                      }}
+                      activeDot={{
+                        r: 8,
+                        fill: "#8B5CF6",
+                        stroke: "var(--color-background)",
                         strokeWidth: 2,
                         cursor: "pointer",
                         onClick: (e: any, payload: any) => {
@@ -298,10 +301,10 @@ export function Dashboard() {
                       itemStyle={{ color: "#3B82F6" }}
                       formatter={(value: any) => [formatAmount(value), "Spent"]}
                     />
-                    <Bar 
-                      dataKey="spent" 
-                      fill="#3B82F6" 
-                      radius={[4, 4, 0, 0]} 
+                    <Bar
+                      dataKey="spent"
+                      fill="#3B82F6"
+                      radius={[4, 4, 0, 0]}
                       animationDuration={1500}
                       animationBegin={400}
                     >
@@ -327,7 +330,7 @@ export function Dashboard() {
 
           {/* Private Transaction History */}
           {user && (
-            <motion.div 
+            <motion.div
               variants={slideUpVariants}
               initial="hidden"
               whileInView="visible"
@@ -381,7 +384,7 @@ export function Dashboard() {
                     <X className="w-5 h-5 text-muted-foreground" aria-hidden="true" />
                   </button>
                 </div>
-                
+
                 <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
                   {selectedMonth.transactions?.map((t: any) => (
                     <div key={t.id} className="flex justify-between items-center p-4 rounded-xl bg-surface-hover/50 border border-border/50 hover:bg-surface-hover transition-colors">
